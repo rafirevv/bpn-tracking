@@ -76,7 +76,7 @@ require_once __DIR__ . '/includes/sidebar.php';
 
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-white border-bottom p-0">
-        <ul class="nav nav-tabs card-header-tabs m-0 px-3 border-0">
+        <ul class="nav nav-tabs card-header-tabs m-0 px-3 border-0 flex-nowrap overflow-x-auto" style="scrollbar-width: thin; -webkit-overflow-scrolling: touch;">
             <li class="nav-item">
                 <a class="nav-link <?= $tab === 'semua' ? 'active fw-bold' : '' ?> py-3" href="notifikasi.php?tab=semua">
                     Semua

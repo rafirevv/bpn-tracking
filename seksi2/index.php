@@ -66,21 +66,11 @@ require_once __DIR__ . '/../includes/sidebar.php';
 .stat-card-tab {
     cursor: pointer;
 }
-.stat-card-tab .stat-label {
-    word-break: break-word;
-    line-height: 1.25;
-}
-@media (min-width: 1200px) {
-    .stat-card-tab {
-        padding: 14px 12px;
-        gap: 10px;
-    }
-}
 </style>
 
 <!-- Stat Cards Seksi 2 (5 Kartu Selaras) -->
 <div class="row g-3 mb-4" id="statCardRow">
-    <div class="col-12 col-sm-6 col-md-4 col-xl">
+    <div class="col-6 col-md-4 col-xl">
         <div class="stat-card stat-card-tab active-tab" style="--stat-color:#2563EB" data-filter="semua" tabindex="0" role="button" aria-pressed="true" title="Tampilkan semua berkas antrean">
             <div class="stat-icon"><i class="bi bi-inbox-fill"></i></div>
             <div>
@@ -89,7 +79,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
             </div>
         </div>
     </div>
-    <div class="col-6 col-sm-6 col-md-4 col-xl">
+    <div class="col-6 col-md-4 col-xl">
         <div class="stat-card stat-card-tab <?= $totalPerluPerbaikan > 0 ? 'border-danger' : '' ?>" style="--stat-color:#C0392B" data-filter="perbaikan" tabindex="0" role="button" title="Berkas yang dikembalikan ke Seksi 2 untuk diperbaiki">
             <div class="stat-icon"><i class="bi bi-arrow-return-left"></i></div>
             <div>
@@ -98,7 +88,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
             </div>
         </div>
     </div>
-    <div class="col-6 col-sm-6 col-md-4 col-xl">
+    <div class="col-6 col-md-4 col-xl">
         <div class="stat-card stat-card-tab <?= $totalRevisi > 0 ? 'border-danger' : '' ?>" style="--stat-color:#DC3545" data-filter="revisi" tabindex="0" role="button" title="Berkas setelah ditolak dan dikembalikan lagi untuk diproses ulang">
             <div class="stat-icon"><i class="bi bi-arrow-repeat"></i></div>
             <div>
@@ -107,7 +97,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
             </div>
         </div>
     </div>
-    <div class="col-6 col-sm-6 col-md-4 col-xl">
+    <div class="col-6 col-md-4 col-xl">
         <div class="stat-card stat-card-tab <?= $totalWaspada > 0 ? 'border-warning' : '' ?>" style="--stat-color:#D97706" data-filter="waspada" tabindex="0" role="button" title="Berkas dengan sisa waktu pengerjaan kurang dari 24 jam">
             <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
             <div>
@@ -116,7 +106,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
             </div>
         </div>
     </div>
-    <div class="col-6 col-sm-6 col-md-4 col-xl">
+    <div class="col-12 col-sm-6 col-md-4 col-xl">
         <div class="stat-card stat-card-tab <?= $totalKritis > 0 ? 'border-danger' : '' ?>" style="--stat-color:#DC3545" data-filter="kritis" tabindex="0" role="button" title="Berkas yang telah melewati batas waktu pengerjaan 2 hari">
             <div class="stat-icon"><i class="bi bi-exclamation-octagon"></i></div>
             <div>
@@ -128,12 +118,12 @@ require_once __DIR__ . '/../includes/sidebar.php';
 </div>
 
 <div class="card">
-    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
         <span class="fw-semibold">
             <i class="bi bi-gear me-1 text-primary"></i> Daftar Berkas dalam Antrean Penyelesaian
             <span class="badge text-bg-light border text-muted ms-1" id="filterBadge" style="display:none;"></span>
         </span>
-        <div class="d-flex gap-1">
+        <div class="d-flex flex-wrap gap-1">
             <?php if (!empty($overdueList)): ?>
                 <span class="badge text-bg-danger"><i class="bi bi-exclamation-octagon-fill me-1"></i><?= count($overdueList) ?> Kritis</span>
             <?php endif; ?>
@@ -144,6 +134,9 @@ require_once __DIR__ . '/../includes/sidebar.php';
                 <span class="badge text-bg-success"><i class="bi bi-check-circle me-1"></i>Semua Tepat Waktu</span>
             <?php endif; ?>
         </div>
+    </div>
+    <div class="table-scroll-hint">
+        <i class="bi bi-arrows-expand-vertical" style="transform: rotate(90deg);"></i> Geser tabel ke samping untuk melihat kolom selengkapnya
     </div>
     <div class="table-responsive">
         <table class="table table-modern mb-0" id="tableAntrean">

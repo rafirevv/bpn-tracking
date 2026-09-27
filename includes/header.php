@@ -87,8 +87,8 @@ if ($user && isset($conn)) {
 
 .notif-dropdown-menu {
     width: 390px !important;
-    min-width: 0 !important;
-    max-width: calc(100vw - 24px) !important;
+    min-width: 280px !important;
+    max-width: calc(100vw - 20px) !important;
     border-radius: 14px !important;
     border: 1px solid rgba(0, 0, 0, 0.08) !important;
     box-shadow: 0 18px 38px -10px rgba(15, 23, 42, 0.25), 0 0 1px 1px rgba(0,0,0,0.05) !important;
@@ -98,15 +98,11 @@ if ($user && isset($conn)) {
 }
 @media (max-width: 575.98px) {
     .notif-dropdown-menu {
-        position: fixed !important;
-        top: 62px !important;
-        left: 10px !important;
-        right: 10px !important;
-        width: auto !important;
-        max-width: calc(100vw - 20px) !important;
-        min-width: 0 !important;
-        transform: none !important;
-        margin: 0 !important;
+        width: calc(100vw - 20px) !important;
+        max-width: 360px !important;
+        min-width: 280px !important;
+        right: -8px !important;
+        left: auto !important;
     }
 }
 .notif-header {
@@ -195,18 +191,18 @@ if ($user && isset($conn)) {
         </div>
     </div>
 
-    <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto">
+    <div class="d-flex align-items-center gap-3 ms-auto">
         <!-- In-App Notification Dropdown -->
         <?php if ($user): ?>
         <div class="topbar-notif dropdown">
-            <button class="btn-notif position-relative" type="button" id="notifDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" title="Pemberitahuan">
-                <i class="bi bi-bell-fill"></i>
-                <span class="notif-badge <?= $notifUnreadCount > 0 ? '' : 'd-none' ?>" id="notifBadgeCounter">
+            <button class="btn-notif position-relative" type="button" id="notifDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" title="Pemberitahuan" style="width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#ffffff; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.12);">
+                <i class="bi bi-bell-fill" style="font-size:1.1rem; line-height:1;"></i>
+                <span class="notif-badge <?= $notifUnreadCount > 0 ? '' : 'd-none' ?>" id="notifBadgeCounter" style="position:absolute; top:-3px; right:-3px; background:#EF4444; color:#ffffff; font-size:0.65rem; font-weight:800; line-height:1; padding:3px 6px; min-width:18px; text-align:center; border-radius:999px; border:2px solid #0E2A47; box-shadow:0 0 10px rgba(239,68,68,0.7);">
                     <?= $notifUnreadCount > 99 ? '99+' : $notifUnreadCount ?>
                 </span>
             </button>
-            <div class="dropdown-menu dropdown-menu-end shadow-lg notif-dropdown-menu" aria-labelledby="notifDropdown">
-                <div class="notif-header d-flex justify-content-between align-items-center">
+            <div class="dropdown-menu dropdown-menu-end shadow-lg notif-dropdown-menu" aria-labelledby="notifDropdown" style="width:min(390px, calc(100vw - 20px)); min-width:280px; max-width:calc(100vw - 20px); border-radius:14px; border:1px solid rgba(0,0,0,0.08); box-shadow:0 18px 38px -10px rgba(15,23,42,0.25); padding:0; margin-top:10px; overflow:hidden;">
+                <div class="notif-header d-flex justify-content-between align-items-center" style="padding:12px 18px; background:#F8FAFC; border-bottom:1px solid #E2E8F0;">
                     <div class="d-flex align-items-center gap-2">
                         <span class="fw-bold text-dark"><i class="bi bi-bell me-1 text-primary"></i>Pemberitahuan</span>
                         <span class="badge bg-danger rounded-pill <?= $notifUnreadCount > 0 ? '' : 'd-none' ?>" id="notifBadgeHeader"><?= $notifUnreadCount ?> Baru</span>

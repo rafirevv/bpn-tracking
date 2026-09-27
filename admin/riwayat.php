@@ -99,6 +99,9 @@ require_once __DIR__ . '/../includes/sidebar.php';
 </form>
 
 <div class="card">
+    <div class="table-scroll-hint">
+        <i class="bi bi-arrows-expand-vertical" style="transform: rotate(90deg);"></i> Geser tabel ke samping untuk melihat kolom selengkapnya
+    </div>
     <div class="table-responsive">
         <table class="table table-modern mb-0">
             <thead>

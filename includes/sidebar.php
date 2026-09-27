@@ -30,10 +30,16 @@ try {
 }
 ?>
 <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header-mobile d-flex d-lg-none align-items-center justify-content-between pb-3 mb-2 border-bottom border-secondary border-opacity-25 px-2">
-        <span class="text-white fw-bold small text-uppercase" style="letter-spacing: 0.05em;"><i class="bi bi-grid-fill me-2 text-warning"></i>Menu SITRACK</span>
-        <button class="btn btn-sm btn-outline-light border-0 text-white-50 p-1" id="sidebarCloseBtn" type="button" aria-label="Tutup menu">
-            <i class="bi bi-x-lg fs-5"></i>
+    <div class="sidebar-mobile-head">
+        <div class="d-flex align-items-center gap-2">
+            <img src="<?= baseUrl('assets/img/logo-bpn-white.png') ?>" alt="Logo ATR/BPN" style="width: 28px; height: 28px; object-fit: contain;">
+            <div class="d-flex flex-column text-white">
+                <span class="fw-bold" style="font-size: 0.95rem; letter-spacing: 0.02em;">SITRACK</span>
+                <span class="text-white-50" style="font-size: 0.68rem;">ATR/BPN</span>
+            </div>
+        </div>
+        <button type="button" class="btn-close-sidebar" id="sidebarCloseBtn" aria-label="Tutup menu">
+            <i class="bi bi-x-lg"></i>
         </button>
     </div>
     <nav class="sidebar-nav">

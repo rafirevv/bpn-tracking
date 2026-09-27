@@ -84,22 +84,12 @@ require_once __DIR__ . '/../includes/sidebar.php';
         <h1>Antrean Tugas Loket</h1>
         <p>Kelola berkas baru yang siap dikirim, verifikasi berkas dari seksi untuk diserahkan ke pemohon atau dikembalikan, dan pantau berkas berjalan.</p>
     </div>
-    <a href="tambah.php" class="btn btn-primary w-100 w-sm-auto"><i class="bi bi-file-earmark-plus me-1"></i>Input Berkas Baru</a>
+    <a href="tambah.php" class="btn btn-primary"><i class="bi bi-file-earmark-plus me-1"></i>Input Berkas Baru</a>
 </div>
 
 <style>
 .stat-card-tab {
     cursor: pointer;
-}
-.stat-card-tab .stat-label {
-    word-break: break-word;
-    line-height: 1.25;
-}
-@media (min-width: 1200px) {
-    .stat-card-tab {
-        padding: 14px 12px;
-        gap: 10px;
-    }
 }
 .loket-section { display: none; }
 .loket-section.active-section {
@@ -154,10 +144,12 @@ require_once __DIR__ . '/../includes/sidebar.php';
 <div id="section-simpan" class="loket-section active-section">
 <div class="card mb-4 shadow-sm" style="border-top: 3px solid #0D9488;">
     <div class="card-header py-3 px-3">
-        <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-inbox fs-5 flex-shrink-0" style="color:#0D9488;"></i>
-            <span class="fw-bold fs-6 text-dark">Berkas Simpan di Loket &mdash; Menunggu Pengiriman ke Seksi</span>
-            <span class="badge rounded-pill text-white px-2.5" style="background-color:#0D9488; font-size: 0.75rem;"><?= count($berkasSimpanLoket) ?></span>
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-inbox fs-5 flex-shrink-0" style="color:#0D9488;"></i>
+                <span class="fw-bold fs-6 text-dark">Berkas Simpan di Loket &mdash; Menunggu Pengiriman ke Seksi</span>
+            </div>
+            <span class="badge rounded-pill text-white px-2.5" style="background-color:#0D9488; font-size: 0.75rem;"><?= count($berkasSimpanLoket) ?> Berkas</span>
         </div>
         <div class="text-muted small mt-1" style="font-size: 0.83rem;">
             Daftar berkas baru yang diinput dan disimpan di Loket. Pilih berkas untuk dikirim ke Seksi 1 atau Seksi 2.
@@ -177,6 +169,9 @@ require_once __DIR__ . '/../includes/sidebar.php';
                 </div>
             </div>
 
+            <div class="table-scroll-hint">
+                <i class="bi bi-arrows-expand-vertical" style="transform: rotate(90deg);"></i> Geser tabel ke samping untuk melihat kolom selengkapnya
+            </div>
             <div class="table-responsive">
                 <table class="table table-modern align-middle mb-0">
                     <thead>
@@ -252,16 +247,21 @@ require_once __DIR__ . '/../includes/sidebar.php';
 <div id="section-siap" class="loket-section">
 <div class="card mb-4 shadow-sm" style="border-top: 3px solid #16A34A;">
     <div class="card-header py-3 px-3">
-        <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-folder-check fs-5 flex-shrink-0 text-success"></i>
-            <span class="fw-bold fs-6 text-dark">Berkas Siap Daftar &mdash; Diteruskan ke Loket</span>
-            <span class="badge rounded-pill bg-success px-2.5" style="font-size: 0.75rem;"><?= count($berkasSiapDaftar) ?></span>
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-folder-check fs-5 flex-shrink-0 text-success"></i>
+                <span class="fw-bold fs-6 text-dark">Berkas Siap Daftar &mdash; Diteruskan ke Loket</span>
+            </div>
+            <span class="badge rounded-pill bg-success px-2.5" style="font-size: 0.75rem;"><?= count($berkasSiapDaftar) ?> Berkas</span>
         </div>
         <div class="text-muted small mt-1" style="font-size: 0.83rem;">
             Berkas yang telah selesai dikerjakan oleh Seksi dan diteruskan ke Loket untuk diverifikasi kelengkapannya sebelum diserahkan ke pemohon.
         </div>
     </div>
     <div class="card-body p-0">
+        <div class="table-scroll-hint">
+            <i class="bi bi-arrows-expand-vertical" style="transform: rotate(90deg);"></i> Geser tabel ke samping untuk melihat kolom selengkapnya
+        </div>
         <div class="table-responsive">
             <table class="table table-modern align-middle mb-0">
                 <thead>
@@ -349,14 +349,19 @@ require_once __DIR__ . '/../includes/sidebar.php';
 <div id="section-perbaikan" class="loket-section">
 <div class="card mb-4 shadow-sm" style="border-top: 3px solid #C0392B;">
     <div class="card-header py-3 px-3">
-        <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-arrow-return-left fs-5 flex-shrink-0 text-danger"></i>
-            <span class="fw-bold fs-6 text-dark">Perlu Ditindaklanjuti &mdash; Berkas Dikembalikan ke Loket</span>
-            <span class="badge rounded-pill bg-danger px-2.5" style="font-size: 0.75rem;"><?= count($perluDiterima) ?></span>
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-arrow-return-left fs-5 flex-shrink-0 text-danger"></i>
+                <span class="fw-bold fs-6 text-dark">Perlu Ditindaklanjuti &mdash; Berkas Dikembalikan ke Loket</span>
+            </div>
+            <span class="badge rounded-pill bg-danger px-2.5" style="font-size: 0.75rem;"><?= count($perluDiterima) ?> Berkas</span>
         </div>
         <div class="text-muted small mt-1" style="font-size: 0.83rem;">
             Pilih tindakan: kembalikan berkas ke pemohon, atau teruskan kembali ke seksi setelah berkas diperbaiki.
         </div>
+    </div>
+    <div class="table-scroll-hint">
+        <i class="bi bi-arrows-expand-vertical" style="transform: rotate(90deg);"></i> Geser tabel ke samping untuk melihat kolom selengkapnya
     </div>
     <div class="table-responsive">
         <table class="table table-modern align-middle mb-0">
@@ -430,14 +435,19 @@ require_once __DIR__ . '/../includes/sidebar.php';
 <div id="section-proses" class="loket-section">
 <div class="card mb-4 shadow-sm" style="border-top: 3px solid #2563A8;">
     <div class="card-header py-3 px-3">
-        <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-hourglass-split fs-5 flex-shrink-0 text-primary"></i>
-            <span class="fw-bold fs-6 text-dark">Berkas Sedang Berjalan di Unit Lain (Monitoring)</span>
-            <span class="badge rounded-pill bg-primary px-2.5" style="font-size: 0.75rem;"><?= $totalDalamProses ?></span>
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-hourglass-split fs-5 flex-shrink-0 text-primary"></i>
+                <span class="fw-bold fs-6 text-dark">Berkas Sedang Berjalan di Unit Lain (Monitoring)</span>
+            </div>
+            <span class="badge rounded-pill bg-primary px-2.5" style="font-size: 0.75rem;"><?= $totalDalamProses ?> Berkas</span>
         </div>
         <div class="text-muted small mt-1" style="font-size: 0.83rem;">
             Pantau posisi dan status berkas yang sedang diproses oleh Seksi 1 atau Seksi 2 secara real-time.
         </div>
+    </div>
+    <div class="table-scroll-hint">
+        <i class="bi bi-arrows-expand-vertical" style="transform: rotate(90deg);"></i> Geser tabel ke samping untuk melihat kolom selengkapnya
     </div>
     <div class="table-responsive">
         <table class="table table-modern align-middle mb-0">

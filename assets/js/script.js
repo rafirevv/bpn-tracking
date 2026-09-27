@@ -6,41 +6,56 @@ document.addEventListener('DOMContentLoaded', function () {
     var toggleBtn = document.getElementById('sidebarToggle');
     var closeBtn = document.getElementById('sidebarCloseBtn');
 
+    function openSidebar() {
+        if (sidebar) sidebar.classList.add('is-open');
+        if (overlay) overlay.classList.add('is-open');
+        document.body.classList.add('sidebar-open');
+    }
+
     function closeSidebar() {
         if (sidebar) sidebar.classList.remove('is-open');
         if (overlay) overlay.classList.remove('is-open');
+        document.body.classList.remove('sidebar-open');
     }
 
     if (toggleBtn) {
         toggleBtn.addEventListener('click', function (e) {
-            e.preventDefault();
             e.stopPropagation();
-            if (sidebar) sidebar.classList.toggle('is-open');
-            if (overlay) overlay.classList.toggle('is-open');
+            if (sidebar && sidebar.classList.contains('is-open')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
         });
     }
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            closeSidebar();
-        });
-    }
+
+    if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
     if (overlay) overlay.addEventListener('click', closeSidebar);
 
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeSidebar();
+    // Close sidebar with Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && sidebar && sidebar.classList.contains('is-open')) {
+            closeSidebar();
+        }
     });
 
-    // Auto close sidebar on mobile when navigating
+    // Auto-close sidebar on link click (mobile)
     if (sidebar) {
-        sidebar.querySelectorAll('.sidebar-nav .nav-link').forEach(function(link) {
-            link.addEventListener('click', function() {
+        sidebar.querySelectorAll('.nav-link').forEach(function (link) {
+            link.addEventListener('click', function () {
                 if (window.innerWidth < 992) {
                     closeSidebar();
                 }
             });
         });
     }
+
+    // Reset when resizing to desktop
+    window.addEventListener('resize', function () {
+        if (window.innerWidth >= 992 && sidebar && sidebar.classList.contains('is-open')) {
+            closeSidebar();
+        }
+    });
 
     /* ---- Confirm dialog untuk aksi penting (hapus user, dsb) ---- */
     document.querySelectorAll('[data-confirm]').forEach(function (el) {

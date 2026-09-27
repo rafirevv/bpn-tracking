@@ -150,7 +150,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
                 <div class="col-md-4">
                     <label class="action-choice h-100 is-checked" id="card-selesai" for="opt-selesai">
                         <input type="radio" name="keputusan" id="opt-selesai" value="selesai" class="action-choice-radio"
-                               data-requires-note="1"
+                               data-requires-note="0"
                                data-btn-label="<i class='bi bi-check-circle me-1'></i> Selesai &amp; Kembalikan ke Loket"
                                data-btn-class="btn-success" checked>
                         <div class="d-flex align-items-start gap-2">
@@ -241,7 +241,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
                 <label class="form-label fw-semibold" id="catatanLabel">Catatan Penyelesaian <span class="text-muted fw-normal">(Opsional)</span></label>
                 <textarea name="catatan" id="catatanInput" class="form-control" rows="3"
                           placeholder="Tuliskan catatan penyelesaian berkas jika ada..."></textarea>
-                <div class="form-text" id="catatanHint">Opsional — tambahkan catatan penyelesaian berkas untuk Loket jika diperlukan.</div>
+                <div class="form-text" id="catatanHint">Opsional — tambahkan catatan penyelesaian jika diperlukan.</div>
             </div>
 
             <button type="submit" class="btn w-100 btn-success py-2 fw-semibold" id="btnSubmitProses">
@@ -283,12 +283,12 @@ document.addEventListener('DOMContentLoaded', function () {
             wrapperLoketTolak.style.display = 'none';
 
             btnSubmit.className = 'btn w-100 btn-success py-2 fw-semibold';
-            btnSubmit.innerHTML = '<i class="bi bi-check-circle me-1"></i> Selesai &amp; Serahkan ke Loket';
+            btnSubmit.innerHTML = '<i class="bi bi-check-circle me-1"></i> Selesai &amp; Kembalikan ke Loket';
 
             catatanInput.required    = false;
             catatanLabel.innerHTML   = 'Catatan Penyelesaian <span class="text-muted fw-normal">(Opsional)</span>';
             catatanInput.placeholder = 'Tuliskan catatan penyelesaian berkas jika ada...';
-            catatanHint.textContent  = 'Opsional — tambahkan catatan penyelesaian berkas untuk Loket jika diperlukan.';
+            catatanHint.textContent  = 'Opsional — tambahkan catatan penyelesaian jika diperlukan.';
 
         } else if (radioKembalikanS1 && radioKembalikanS1.checked) {
             if (cardKembalikanS1) cardKembalikanS1.classList.add('is-checked');

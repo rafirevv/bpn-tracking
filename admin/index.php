@@ -143,7 +143,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
 
 <!-- Kartu Ringkasan Posisi Berkas -->
 <div class="row g-3 mb-4" id="statCardRow">
-    <div class="col-12 col-sm-6 col-md-4 col-xl">
+    <div class="col-6 col-md-4 col-xl">
         <a href="?posisi=semua<?= $sort !== 'lama' ? '&sort='.urlencode($sort) : '' ?>" class="d-block h-100 text-decoration-none stat-link" data-posisi="semua">
             <div class="stat-card <?= $posisiFil === 'semua' ? 'active' : '' ?>" style="--stat-color:#5D6D7E">
                 <div class="stat-icon"><i class="bi bi-folder2-open"></i></div>
@@ -151,7 +151,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
             </div>
         </a>
     </div>
-    <div class="col-6 col-sm-6 col-md-4 col-xl">
+    <div class="col-6 col-md-4 col-xl">
         <a href="?posisi=loket<?= $sort !== 'lama' ? '&sort='.urlencode($sort) : '' ?>" class="d-block h-100 text-decoration-none stat-link" data-posisi="loket">
             <div class="stat-card <?= $posisiFil === 'loket' ? 'active' : '' ?>" style="--stat-color:#0D6EFD">
                 <div class="stat-icon"><i class="bi bi-inbox"></i></div>
@@ -159,23 +159,23 @@ require_once __DIR__ . '/../includes/sidebar.php';
             </div>
         </a>
     </div>
-    <div class="col-6 col-sm-6 col-md-4 col-xl">
+    <div class="col-6 col-md-4 col-xl">
         <a href="?posisi=seksi_1<?= $sort !== 'lama' ? '&sort='.urlencode($sort) : '' ?>" class="d-block h-100 text-decoration-none stat-link" data-posisi="seksi_1">
             <div class="stat-card <?= $posisiFil === 'seksi_1' ? 'active' : '' ?>" style="--stat-color:#0D6EFD">
                 <div class="stat-icon"><i class="bi bi-file-earmark-check"></i></div>
-                <div><div class="stat-value"><?= $totalSeksi1 ?></div><div class="stat-label"><span class="d-none d-sm-inline">Survei &amp; Pemetaan</span><span class="d-inline d-sm-none">Seksi 1</span></div></div>
+                <div><div class="stat-value"><?= $totalSeksi1 ?></div><div class="stat-label">Survei &amp; Pemetaan</div></div>
             </div>
         </a>
     </div>
-    <div class="col-6 col-sm-6 col-md-4 col-xl">
+    <div class="col-6 col-md-4 col-xl">
         <a href="?posisi=seksi_2<?= $sort !== 'lama' ? '&sort='.urlencode($sort) : '' ?>" class="d-block h-100 text-decoration-none stat-link" data-posisi="seksi_2">
             <div class="stat-card <?= $posisiFil === 'seksi_2' ? 'active' : '' ?>" style="--stat-color:#0D6EFD">
                 <div class="stat-icon"><i class="bi bi-file-earmark-check"></i></div>
-                <div><div class="stat-value"><?= $totalSeksi2 ?></div><div class="stat-label"><span class="d-none d-sm-inline">Penetapan &amp; Daftar</span><span class="d-inline d-sm-none">Seksi 2</span></div></div>
+                <div><div class="stat-value"><?= $totalSeksi2 ?></div><div class="stat-label">Penetapan Hak &amp; Pendaftaran</div></div>
             </div>
         </a>
     </div>
-    <div class="col-6 col-sm-6 col-md-4 col-xl">
+    <div class="col-6 col-md-4 col-xl">
         <a href="?posisi=selesai<?= $sort !== 'lama' ? '&sort='.urlencode($sort) : '' ?>" class="d-block h-100 text-decoration-none stat-link" data-posisi="selesai">
             <div class="stat-card <?= $posisiFil === 'selesai' ? 'active' : '' ?>" style="--stat-color:#1E8A5F">
                 <div class="stat-icon"><i class="bi bi-check2-circle"></i></div>
@@ -183,7 +183,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
             </div>
         </a>
     </div>
-    <div class="col-6 col-sm-6 col-md-4 col-xl">
+    <div class="col-6 col-md-4 col-xl">
         <a href="?posisi=warning<?= $sort !== 'lama' ? '&sort='.urlencode($sort) : '' ?>" class="d-block h-100 text-decoration-none stat-link" data-posisi="warning">
             <div class="stat-card <?= $posisiFil === 'warning' ? 'active' : ($totalWarningSla > 0 ? 'border-warning' : '') ?>" style="--stat-color:#D97706">
                 <div class="stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
@@ -191,7 +191,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
             </div>
         </a>
     </div>
-    <div class="col-6 col-sm-6 col-md-4 col-xl">
+    <div class="col-12 col-sm-6 col-md-4 col-xl">
         <a href="?posisi=terlewat<?= $sort !== 'lama' ? '&sort='.urlencode($sort) : '' ?>" class="d-block h-100 text-decoration-none stat-link" data-posisi="terlewat">
             <div class="stat-card <?= $posisiFil === 'terlewat' ? 'active' : ($totalTerlewatSla > 0 ? 'border-danger' : '') ?>" style="--stat-color:#DC3545">
                 <div class="stat-icon"><i class="bi bi-exclamation-octagon"></i></div>
@@ -203,13 +203,13 @@ require_once __DIR__ . '/../includes/sidebar.php';
 
 <!-- Card Utama: Tabel Tracking Semua Berkas -->
 <div class="card mb-4 shadow-sm" id="trackingTableCard">
-    <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
         <div class="fw-semibold fs-6">
             <i class="bi bi-geo-fill text-primary me-1"></i> Tracking Posisi Semua Berkas
         </div>
-        <div class="dashboard-filter-tabs w-100 w-md-auto">
+        <div class="w-100 w-lg-auto">
             <!-- Filter Tabs Posisi Unit -->
-            <div class="btn-group btn-group-sm" role="group">
+            <div class="filter-pill-wrapper" role="group" aria-label="Filter Posisi Berkas">
                 <a href="?posisi=semua<?= $q ? '&q='.urlencode($q) : '' ?><?= $sort !== 'lama' ? '&sort='.urlencode($sort) : '' ?>" class="btn <?= $posisiFil === 'semua' ? 'btn-secondary text-white' : 'btn-outline-secondary' ?>">
                     Semua (<?= $totalBerkas ?>)
                 </a>
@@ -217,10 +217,10 @@ require_once __DIR__ . '/../includes/sidebar.php';
                     Loket (<?= $totalLoket ?>)
                 </a>
                 <a href="?posisi=seksi_1<?= $q ? '&q='.urlencode($q) : '' ?><?= $sort !== 'lama' ? '&sort='.urlencode($sort) : '' ?>" class="btn <?= $posisiFil === 'seksi_1' ? 'btn-primary text-white' : 'btn-outline-primary' ?>">
-                    <span class="d-none d-lg-inline">Survei &amp; Pemetaan</span><span class="d-inline d-lg-none">Seksi 1</span> (<?= $totalSeksi1 ?>)
+                    Survei &amp; Pemetaan (<?= $totalSeksi1 ?>)
                 </a>
                 <a href="?posisi=seksi_2<?= $q ? '&q='.urlencode($q) : '' ?><?= $sort !== 'lama' ? '&sort='.urlencode($sort) : '' ?>" class="btn <?= $posisiFil === 'seksi_2' ? 'btn-primary text-white' : 'btn-outline-primary' ?>">
-                    <span class="d-none d-lg-inline">Penetapan Hak &amp; Pendaftaran</span><span class="d-inline d-lg-none">Seksi 2</span> (<?= $totalSeksi2 ?>)
+                    Penetapan Hak &amp; Pendaftaran (<?= $totalSeksi2 ?>)
                 </a>
                 <a href="?posisi=selesai<?= $q ? '&q='.urlencode($q) : '' ?><?= $sort !== 'lama' ? '&sort='.urlencode($sort) : '' ?>" class="btn <?= $posisiFil === 'selesai' ? 'btn-success text-white' : 'btn-outline-secondary' ?>">
                     <i class="bi bi-check-circle-fill me-1"></i>Selesai (<?= $totalSelesai ?>)
@@ -252,24 +252,25 @@ require_once __DIR__ . '/../includes/sidebar.php';
                 </div>
             </div>
 
-            <div class="col-12 col-md-6 col-lg-5 d-flex justify-content-between justify-content-md-end align-items-center gap-2">
+            <div class="col-12 col-md-6 col-lg-5 d-flex justify-content-md-end align-items-center gap-2">
                 <!-- Dropdown Sort Simple -->
-                <div class="dropdown flex-grow-1 flex-md-grow-0">
-                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle bg-white d-flex align-items-center justify-content-between gap-1 shadow-sm w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Pilih urutan berkas">
-                        <span class="d-flex align-items-center text-truncate"><i class="bi bi-arrow-down-up text-primary me-1"></i>Urutan: <strong class="text-primary ms-1"><?= $sort === 'baru' ? 'Paling Baru' : 'Paling Lama' ?></strong></span>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle bg-white d-flex align-items-center gap-1 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Pilih urutan berkas">
+                        <i class="bi bi-arrow-down-up text-primary me-1"></i>
+                        <span>Urutan: <strong class="text-primary"><?= $sort === 'baru' ? 'Paling Baru di-Input' : 'Paling Lama di-Input' ?></strong></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm py-1 border" style="font-size: 0.85rem; min-width: 220px;">
                         <li><h6 class="dropdown-header text-muted py-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">PILIH URUTAN BERKAS</h6></li>
                         <li>
                             <a class="dropdown-item py-2 d-flex align-items-center justify-content-between <?= $sort === 'lama' ? 'active fw-bold' : '' ?>" 
-                                href="?posisi=<?= urlencode($posisiFil) ?><?= $q ? '&q='.urlencode($q) : '' ?>&sort=lama">
+                               href="?posisi=<?= urlencode($posisiFil) ?><?= $q ? '&q='.urlencode($q) : '' ?>&sort=lama">
                                 <span><i class="bi bi-sort-numeric-down me-2 <?= $sort === 'lama' ? 'text-white' : 'text-primary' ?>"></i>Paling Lama di-Input</span>
                                 <?php if ($sort === 'lama'): ?><i class="bi bi-check2 fw-bold"></i><?php endif; ?>
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item py-2 d-flex align-items-center justify-content-between <?= $sort === 'baru' ? 'active fw-bold' : '' ?>" 
-                                href="?posisi=<?= urlencode($posisiFil) ?><?= $q ? '&q='.urlencode($q) : '' ?>&sort=baru">
+                               href="?posisi=<?= urlencode($posisiFil) ?><?= $q ? '&q='.urlencode($q) : '' ?>&sort=baru">
                                 <span><i class="bi bi-sort-numeric-down-alt me-2 <?= $sort === 'baru' ? 'text-white' : 'text-primary' ?>"></i>Paling Baru di-Input</span>
                                 <?php if ($sort === 'baru'): ?><i class="bi bi-check2 fw-bold"></i><?php endif; ?>
                             </a>
@@ -278,7 +279,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
                 </div>
 
                 <?php if ($q !== '' || $sort !== 'lama' || $posisiFil !== 'semua'): ?>
-                    <a href="index.php" class="btn btn-sm btn-outline-secondary text-nowrap flex-shrink-0" title="Reset pencarian dan urutan">
+                    <a href="index.php" class="btn btn-sm btn-outline-secondary text-nowrap" title="Reset pencarian dan urutan">
                         <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
                     </a>
                 <?php endif; ?>
@@ -286,6 +287,9 @@ require_once __DIR__ . '/../includes/sidebar.php';
         </form>
     </div>
 
+    <div class="table-scroll-hint">
+        <i class="bi bi-arrows-expand-vertical" style="transform: rotate(90deg);"></i> Geser tabel ke samping untuk melihat kolom selengkapnya
+    </div>
     <div class="table-responsive">
         <table class="table table-modern align-middle mb-0">
             <thead>
@@ -458,17 +462,15 @@ require_once __DIR__ . '/../includes/sidebar.php';
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script>
-function getStatusChartLabels() {
-    return window.innerWidth < 576 
-        ? ['Loket', 'Seksi 1', 'Seksi 2', 'Selesai'] 
-        : ['Loket', ['Seksi 1', 'Survei & Pemetaan'], ['Seksi 2', 'Penetapan & Pendaftaran'], 'Selesai'];
-}
-
-const chartEl = document.getElementById('chartStatus');
-const statusChart = new Chart(chartEl, {
+new Chart(document.getElementById('chartStatus'), {
     type: 'bar',
     data: {
-        labels: getStatusChartLabels(),
+        labels: [
+            'Loket',
+            ['Seksi 1', 'Survei & Pemetaan'],
+            ['Seksi 2', 'Penetapan & Pendaftaran'],
+            'Selesai'
+        ],
         datasets: [{
             label: 'Jumlah Berkas',
             data: [
@@ -561,13 +563,6 @@ const statusChart = new Chart(chartEl, {
     }]
 });
 
-window.addEventListener('resize', function() {
-    if (statusChart) {
-        statusChart.data.labels = getStatusChartLabels();
-        statusChart.update('none');
-    }
-});
-
 // Dynamic filtering for dashboard stat cards & table tabs (preserves smooth floating transition without page reload)
 document.addEventListener('DOMContentLoaded', function() {
     const tableCard = document.getElementById('trackingTableCard');
@@ -617,7 +612,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     tableCard.addEventListener('click', function(e) {
-        const link = e.target.closest('.card-header .btn-group a, .dropdown-menu a.dropdown-item');
+        const link = e.target.closest('.card-header .filter-pill-wrapper a, .card-header .btn-group a, .dropdown-menu a.dropdown-item');
         if (!link) return;
         const href = link.getAttribute('href');
         if (href && href.startsWith('?posisi=')) {

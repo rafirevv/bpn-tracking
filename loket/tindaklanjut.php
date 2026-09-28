@@ -72,6 +72,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($keputusan === 'kembalikan_pemohon' && $catatan === '') {
+        setFlash('danger', 'Catatan pengembalian ke pemohon wajib diisi.');
+        header('Location: tindaklanjut.php?id=' . $id);
+        exit;
+    }
+
+    if ($keputusan === 'teruskan_seksi' && $catatan === '') {
+        setFlash('danger', 'Catatan perbaikan wajib diisi saat meneruskan berkas kembali ke Seksi.');
+        header('Location: tindaklanjut.php?id=' . $id);
+        exit;
+    }
+
     $petugasNama = $_SESSION['nama_lengkap'] ?? 'Petugas Loket';
 
     try {
@@ -248,7 +260,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
                     <label class="action-choice h-100 is-checked" id="card-kembalikan_pemohon" for="opt-kembalikan-pemohon">
                         <input type="radio" name="keputusan" id="opt-kembalikan-pemohon" value="kembalikan_pemohon"
                                class="action-choice-radio"
-                               data-requires-note="0"
+                               data-requires-note="1"
                                data-btn-label="<i class='bi bi-person-x me-1'></i> Kembalikan ke Pemohon"
                                data-btn-class="btn-warning"
                                checked>
@@ -314,11 +326,11 @@ require_once __DIR__ . '/../includes/sidebar.php';
             <!-- Area catatan -->
             <div class="mb-3" id="catatanWrapper">
                 <label class="form-label fw-semibold" id="catatanLabel">
-                    Catatan <span class="text-muted fw-normal">(Opsional)</span>
+                    Catatan Pengembalian ke Pemohon <span class="text-danger">*</span>
                 </label>
                 <textarea name="catatan" id="catatanInput" class="form-control" rows="3"
-                          placeholder="Tuliskan keterangan tindak lanjut atau instruksi untuk seksi yang dituju..."></textarea>
-                <div class="form-text" id="catatanHint">Opsional — tambahkan keterangan penyerahan ke pemohon atau catatan untuk seksi tujuan.</div>
+                          placeholder="Tuliskan alasan dan rincian kekurangan yang harus dilengkapi oleh pemohon..." required></textarea>
+                <div class="form-text" id="catatanHint">Wajib diisi — jelaskan rincian kekurangan atau instruksi perbaikan yang harus dipenuhi oleh pemohon.</div>
             </div>
 
             <button type="submit" class="btn w-100 btn-warning text-dark py-2 fw-semibold" id="btnSubmitTindakLanjut">
@@ -359,9 +371,10 @@ document.addEventListener('DOMContentLoaded', function () {
             btnSubmit.className = 'btn w-100 btn-warning text-dark py-2 fw-semibold';
             btnSubmit.innerHTML = '<i class="bi bi-person-x me-1"></i> Kembalikan ke Pemohon';
 
-            catatanInput.required = false;
-            catatanLabel.innerHTML = 'Catatan Penyerahan <span class="text-muted fw-normal">(Opsional)</span>';
-            catatanHint.textContent = 'Opsional — tambahkan catatan penyerahan berkas kepada pemohon.';
+            catatanInput.required = true;
+            catatanLabel.innerHTML = 'Catatan Pengembalian ke Pemohon <span class="text-danger">*</span>';
+            catatanHint.textContent = 'Wajib diisi — jelaskan rincian kekurangan atau instruksi perbaikan yang harus dipenuhi oleh pemohon.';
+            catatanInput.placeholder = 'Tuliskan alasan dan rincian kekurangan yang harus dilengkapi oleh pemohon...';
 
         } else if (radioTeruskanSeksi && radioTeruskanSeksi.checked) {
             if (cardTeruskan) cardTeruskan.classList.add('is-checked');
@@ -374,6 +387,7 @@ document.addEventListener('DOMContentLoaded', function () {
             catatanInput.required = true;
             catatanLabel.innerHTML = 'Catatan Perbaikan <span class="text-danger">*</span>';
             catatanHint.textContent = 'Wajib diisi — jelaskan dokumen apa yang sudah diperbaiki/dilengkapi oleh pemohon.';
+            catatanInput.placeholder = 'Tuliskan dokumen apa saja yang sudah diperbaiki/dilengkapi...';
         }
     }
 

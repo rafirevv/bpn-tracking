@@ -5,7 +5,25 @@ requireRole(['seksi_1']);
 
 $id = (int) ($_GET['id'] ?? $_POST['id'] ?? 0);
 
-$stmt = $conn->prepare("SELECT * FROM berkas WHERE id = ? AND status_posisi IN ('seksi_1','ditolak_ke_seksi1') LIMIT 1");
+$stmt = $conn->prepare("
+    SELECT b.*, (
+        SELECT l.catatan FROM log_pergerakan l
+        WHERE l.id_berkas = b.id ORDER BY l.id DESC LIMIT 1
+    ) AS catatan_terakhir, (
+        SELECT l.aksi FROM log_pergerakan l
+        WHERE l.id_berkas = b.id ORDER BY l.id DESC LIMIT 1
+    ) AS aksi_terakhir, (
+        SELECT l.status_sebelum FROM log_pergerakan l
+        WHERE l.id_berkas = b.id AND l.aksi = 'dikembalikan' ORDER BY l.id DESC LIMIT 1
+    ) AS asal_penolakan, (
+        SELECT us.nama_lengkap FROM log_pergerakan l
+        LEFT JOIN users us ON us.id = l.pengirim_id
+        WHERE l.id_berkas = b.id ORDER BY l.id DESC LIMIT 1
+    ) AS pengirim_terakhir
+    FROM berkas b 
+    WHERE b.id = ? AND b.status_posisi IN ('seksi_1','ditolak_ke_seksi1') 
+    LIMIT 1
+");
 $stmt->execute([$id]);
 $berkas = $stmt->fetch();
 
@@ -137,6 +155,34 @@ require_once __DIR__ . '/../includes/sidebar.php';
                 </div>
             </div>
         </div>
+
+        <?php if ($berkas['status_posisi'] === 'ditolak_ke_seksi1' || $berkas['aksi_terakhir'] === 'dikembalikan'): ?>
+            <?php 
+                $asalLabel = ($berkas['asal_penolakan'] === 'loket') ? 'Loket' : 'Seksi 2 (Penetapan Hak & Pendaftaran)';
+            ?>
+            <div class="card border-danger-subtle mt-3">
+                <div class="card-header bg-danger-subtle text-danger-emphasis fw-semibold">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                    Catatan Pengembalian dari <?= e($asalLabel) ?>
+                </div>
+                <div class="card-body">
+                    <?php if (!empty($berkas['pengirim_terakhir'])): ?>
+                    <div class="mb-2">
+                        <div class="text-muted small">Dikembalikan oleh</div>
+                        <div class="fw-semibold"><?= e($berkas['pengirim_terakhir']) ?></div>
+                    </div>
+                    <?php endif; ?>
+                    <div>
+                        <div class="text-muted small mb-1">Catatan Kekurangan</div>
+                        <?php if (!empty($berkas['catatan_terakhir'])): ?>
+                            <div class="p-2 bg-light rounded small border text-danger-emphasis" style="white-space:pre-line;"><?= e($berkas['catatan_terakhir']) ?></div>
+                        <?php else: ?>
+                            <div class="text-muted small fst-italic">Tidak ada catatan penolakan.</div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 
     <div class="col-lg-7">
@@ -202,7 +248,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
                     <div id="wrapperTeruskanLoket" style="display:none;">
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <i class="bi bi-inbox-fill text-success fs-5"></i>
-                            <span class="fw-semibold text-success">Tujuan: Petugas Loket (Verifikasi &amp; Penyerahan)</span>
+                            <span class="fw-semibold text-success">Tujuan: Loket (Verifikasi &amp; Penyerahan)</span>
                         </div>
                         <div class="small text-muted">
                             Pekerjaan Survei &amp; Pemetaan telah selesai diproses di Seksi 1. Berkas diteruskan ke Loket agar petugas Loket dapat memeriksa kelengkapan akhir sebelum diserahkan ke pemohon atau ditindaklanjuti.
@@ -212,7 +258,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
                     <div id="wrapperPenerimaLoket" style="display:none;">
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <i class="bi bi-arrow-return-left text-danger fs-5"></i>
-                            <span class="fw-semibold text-danger">Tujuan: Petugas Loket (Perbaikan Berkas)</span>
+                            <span class="fw-semibold text-danger">Tujuan: Loket (Perbaikan Berkas)</span>
                         </div>
                         <div class="small text-muted">
                             Berkas belum lengkap dan akan dikembalikan ke Loket. Petugas Loket akan mengonfirmasi penerimaan dan menghubungi pemohon agar melengkapi kekurangan.

@@ -8,17 +8,33 @@ $warningList = getWarningBerkasUser($conn, $_SESSION['user_id'], 'seksi_1');
 
 $list = $conn->query("
     SELECT b.*, u.nama_lengkap AS pemegang_nama,
-           (b.status_posisi = 'ditolak_ke_seksi1') AS is_perlu_perbaikan,
-           (b.status_posisi != 'ditolak_ke_seksi1' AND (SELECT lp.status_sebelum 
-                FROM log_pergerakan lp 
-                WHERE lp.id_berkas = b.id AND lp.status_sesudah = b.status_posisi 
-                ORDER BY lp.id DESC LIMIT 1) = 'ditolak_ke_loket'
+           (b.status_posisi = 'ditolak_ke_seksi1'
+            OR (SELECT lp_cek.aksi 
+                FROM log_pergerakan lp_cek 
+                WHERE lp_cek.id_berkas = b.id 
+                ORDER BY lp_cek.id DESC LIMIT 1) = 'dikembalikan'
+           ) AS is_perlu_perbaikan,
+           (SELECT lp_asal.status_sebelum 
+            FROM log_pergerakan lp_asal 
+            WHERE lp_asal.id_berkas = b.id AND lp_asal.aksi = 'dikembalikan' 
+            ORDER BY lp_asal.id DESC LIMIT 1
+           ) AS asal_penolak,
+           (b.status_posisi != 'ditolak_ke_seksi1'
+            AND (SELECT lp_no_kembali.aksi 
+                 FROM log_pergerakan lp_no_kembali 
+                 WHERE lp_no_kembali.id_berkas = b.id 
+                 ORDER BY lp_no_kembali.id DESC LIMIT 1) != 'dikembalikan'
+            AND (SELECT lp.status_sebelum 
+                 FROM log_pergerakan lp 
+                 WHERE lp.id_berkas = b.id AND lp.status_sesudah = b.status_posisi 
+                 ORDER BY lp.id DESC LIMIT 1) = 'ditolak_ke_loket'
            ) AS is_revisi
     FROM berkas b
     LEFT JOIN users u ON u.id = b.petugas_tujuan_id
     WHERE b.status_posisi IN ('seksi_1','ditolak_ke_seksi1')
     ORDER BY (b.deadline_at IS NOT NULL AND b.deadline_at < NOW()) DESC, 
              (b.deadline_at IS NOT NULL AND b.deadline_at >= NOW() AND b.deadline_at <= DATE_ADD(NOW(), INTERVAL 1 DAY)) DESC,
+             (b.status_posisi = 'ditolak_ke_seksi1' OR (SELECT lp_o.aksi FROM log_pergerakan lp_o WHERE lp_o.id_berkas = b.id ORDER BY lp_o.id DESC LIMIT 1) = 'dikembalikan') DESC,
              FIELD(b.status_posisi,'ditolak_ke_seksi1','seksi_1'), 
              b.updated_at ASC
 ")->fetchAll();
@@ -45,7 +61,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
 <div class="page-head">
     <div>
         <h1>Antrean &mdash; Seksi 1 (Survei &amp; Pemetaan)</h1>
-        <p>Lakukan pemeriksaan berkas, pengukuran, dan pemetaan. Teruskan ke Seksi 2 (Penetapan Hak &amp; Pendaftaran), teruskan ke Loket, atau kembalikan ke Loket jika tidak lengkap.</p>
+        <p>Teruskan ke Seksi 2 (Penetapan Hak &amp; Pendaftaran), teruskan ke Loket, atau kembalikan ke Loket jika tidak lengkap.</p>
     </div>
 </div>
 
@@ -67,7 +83,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
         </div>
     </div>
     <div class="col-6 col-md-4 col-xl">
-        <div class="stat-card stat-card-tab <?= $totalPerluPerbaikan > 0 ? 'border-danger' : '' ?>" style="--stat-color:#C0392B" data-filter="perbaikan" tabindex="0" role="button" title="Berkas yang ditolak/dikembalikan ke Seksi 1 untuk diperbaiki">
+        <div class="stat-card stat-card-tab <?= $totalPerluPerbaikan > 0 ? 'border-danger' : '' ?>" style="--stat-color:#C0392B" data-filter="perbaikan" tabindex="0" role="button" title="Berkas yang ditolak/dikembalikan ke Seksi 1 untuk diperbaiki (dari Seksi 2 atau Loket)">
             <div class="stat-icon"><i class="bi bi-arrow-return-left"></i></div>
             <div>
                 <div class="stat-value <?= $totalPerluPerbaikan > 0 ? 'text-danger' : '' ?>"><?= $totalPerluPerbaikan ?></div>
@@ -168,8 +184,14 @@ require_once __DIR__ . '/../includes/sidebar.php';
                     <td class="text-nowrap">
                         <?= statusBadge($b['status_posisi']) ?>
                         <?php if ($isPerluPerbaikan): ?>
+                            <?php
+                                $labelPerbaikan = 'Perlu Perbaikan';
+                                if (!empty($b['asal_penolak'])) {
+                                    $labelPerbaikan .= ($b['asal_penolak'] === 'loket') ? ' (dari Loket)' : ' (dari Seksi 2)';
+                                }
+                            ?>
                             <span class="badge text-bg-light text-muted border d-block mt-1">
-                                <i class="bi bi-arrow-return-left me-1 text-danger"></i>Perlu Perbaikan
+                                <i class="bi bi-arrow-return-left me-1 text-danger"></i><?= e($labelPerbaikan) ?>
                             </span>
                         <?php elseif ($isRevisi): ?>
                             <span class="badge text-bg-light text-muted border d-block mt-1">

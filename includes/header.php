@@ -175,6 +175,20 @@ if ($user && isset($conn)) {
     background: #F8FAFC !important;
     padding: 10px 16px !important;
 }
+/* Waspada Filter Pill Icon Fix for Hover & Active */
+.icon-filter-waspada {
+    color: #D97706;
+    transition: color 0.15s ease-in-out;
+}
+.btn-warning .icon-filter-waspada,
+.btn-warning:hover .icon-filter-waspada,
+.btn-outline-warning:hover .icon-filter-waspada,
+.btn-outline-warning:focus .icon-filter-waspada,
+.btn-outline-warning:active .icon-filter-waspada,
+a.btn-outline-warning:hover i,
+a.btn-warning i {
+    color: #0F172A !important;
+}
 </style>
 </head>
 <body>

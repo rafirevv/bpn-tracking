@@ -206,7 +206,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
                     <div id="wrapperPenerimaLoket">
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <i class="bi bi-check-circle-fill text-success fs-5"></i>
-                            <span class="fw-semibold text-success">Tujuan: Petugas Loket (Penyerahan ke Pemohon)</span>
+                            <span class="fw-semibold text-success">Tujuan: Loket (Penyerahan ke Pemohon)</span>
                         </div>
                         <div class="small text-muted">
                             Berkas telah selesai diproses dan diteruskan ke Loket. Petugas Loket mana saja dapat mengonfirmasi penerimaan berkas dan menyerahkannya ke pemohon.
@@ -228,7 +228,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
                     <div id="wrapperPenerimaLoketTolak" style="display:none;">
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <i class="bi bi-arrow-return-left text-danger fs-5"></i>
-                            <span class="fw-semibold text-danger">Tujuan: Petugas Loket (Tindak Lanjut Penolakan)</span>
+                            <span class="fw-semibold text-danger">Tujuan: Loket (Tindak Lanjut Penolakan)</span>
                         </div>
                         <div class="small text-muted">
                             Berkas dikembalikan <strong>langsung ke Loket</strong> tanpa melalui Seksi 1. Digunakan ketika berkas pradaftar masuk ke Seksi 2 langsung melalui Loket dan kekurangan dokumen bersifat administratif. Petugas Loket akan menindaklanjuti (mengembalikan ke pemohon atau meneruskan kembali ke Seksi 2 setelah diperbaiki).

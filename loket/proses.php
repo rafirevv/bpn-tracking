@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $catatanFinal = ($catatan !== '' ? $catatan . ' ' : '') . "[Berkas telah diverifikasi dan diserahkan kepada pemohon oleh $petugasNama. Status berkas dinyatakan SELESAI]";
             $pesanSukses  = "Berkas " . e($berkas['nomor_pendaftaran']) . " berhasil diverifikasi dan diserahkan kepada pemohon. Status berkas dinyatakan SELESAI.";
         } elseif ($keputusan === 'kembalikan_seksi1') {
-            $statusBaru = 'seksi_1';
+            $statusBaru = 'ditolak_ke_seksi1';
             $aksi = 'dikembalikan';
             if (isset($berkas['sisa_sla_detik']) && $berkas['sisa_sla_detik'] !== null) {
                 $finalDeadline = date('Y-m-d H:i:s', time() + (int) $berkas['sisa_sla_detik']);

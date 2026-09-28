@@ -58,7 +58,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
 <div class="page-head">
     <div>
         <h1>Antrean &mdash; Seksi 2 (Penetapan Hak &amp; Pendaftaran)</h1>
-        <p>Lakukan penetapan hak dan pendaftaran berkas. Selesaikan berkas ke Loket, atau kembalikan ke Seksi 1 (Survei &amp; Pemetaan) jika masih ada kekurangan.</p>
+        <p>Selesaikan berkas ke Loket, atau kembalikan ke Seksi 1 (Survei &amp; Pemetaan) maupun Loket jika masih ada kekurangan.</p>
     </div>
 </div>
 

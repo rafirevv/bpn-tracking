@@ -70,7 +70,7 @@ function roleLabel(string $role): string
 {
     return match ($role) {
         'admin'   => 'Administrator',
-        'loket'   => 'Petugas Loket',
+        'loket'   => 'Loket',
         'seksi_1' => 'Seksi 1 (Survei & Pemetaan)',
         'seksi_2' => 'Seksi 2 (Penetapan Hak & Pendaftaran)',
         default   => ucfirst($role),
@@ -137,8 +137,11 @@ function getFlash(): ?array
 /**
  * Mengembalikan [label, warna_badge_bootstrap, ikon] untuk sebuah status_posisi.
  */
-function statusInfo(string $status): array
+function statusInfo(string $status, int $isDiterimaLoket = 0): array
 {
+    if ($status === 'ditolak_ke_loket' && $isDiterimaLoket === 1) {
+        return ['Kembali ke Pemohon', 'danger', 'bi-arrow-return-left'];
+    }
     return match ($status) {
         'loket'              => ['Di Loket',                              'primary',   'bi-inbox'],
         'seksi_1'            => ['Seksi 1 (Survei & Pemetaan)',           'primary',   'bi-file-earmark-check'],
@@ -150,9 +153,9 @@ function statusInfo(string $status): array
     };
 }
 
-function statusBadge(string $status): string
+function statusBadge(string $status, int $isDiterimaLoket = 0): string
 {
-    [$label, $color, $icon] = statusInfo($status);
+    [$label, $color, $icon] = statusInfo($status, $isDiterimaLoket);
     return '<span class="badge badge-status text-bg-' . $color . '"><i class="bi ' . $icon . '"></i> ' . htmlspecialchars($label) . '</span>';
 }
 
@@ -181,10 +184,13 @@ function unitTujuanLabel(string $status): string
     };
 }
 
-function pemegangBerkasLabel(?string $namaPemegang, string $statusPosisi): string
+function pemegangBerkasLabel(?string $namaPemegang, string $statusPosisi, int $isDiterimaLoket = 0): string
 {
     if (!empty($namaPemegang)) {
         return $namaPemegang;
+    }
+    if ($statusPosisi === 'ditolak_ke_loket' && $isDiterimaLoket === 1) {
+        return 'Pemohon (Berkas Dikembalikan)';
     }
     return match ($statusPosisi) {
         'loket'             => 'Tim Loket (Menunggu Kirim)',
@@ -504,6 +510,10 @@ function slaBadge(?string $deadlineAt, string $statusPosisi, $isDiterimaLoket = 
     }
 
     if ($statusPosisi === 'ditolak_ke_loket') {
+        if ($isDiterimaLoket === true || $isDiterimaLoket === 1 || $isDiterimaLoket === '1') {
+            return '<span class="badge text-bg-danger fw-semibold" title="Berkas telah dikembalikan kepada pemohon. Proses berkas selesai.">'
+                 . '<i class="bi bi-arrow-return-left me-1"></i>Kembali ke Pemohon</span>';
+        }
         $sla = hitungSla($deadlineAt, null, $statusPosisi, $sisaSlaDetik);
         $badgeClass = $sla['is_overdue'] ? 'text-bg-danger' : 'text-bg-secondary';
         return '<span class="badge ' . $badgeClass . ' fw-semibold" title="Timer SLA dijeda selama masa perbaikan di Loket/pemohon. Timer akan melanjutkan sisa waktu saat berkas dikirimkan kembali ke Seksi.">'

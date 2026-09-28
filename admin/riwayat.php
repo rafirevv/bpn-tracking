@@ -5,6 +5,10 @@ requireRole(['admin']);
 
 $q         = trim($_GET['q'] ?? '');
 $statusFil = $_GET['status'] ?? 'selesai'; // default riwayat: selesai
+$sort      = trim($_GET['sort'] ?? 'default');
+if (!in_array($sort, ['default', 'selesai', 'dikembalikan'], true)) {
+    $sort = 'default';
+}
 
 // Normalisasi alias status lama bila diakses via link/bookmark lama
 if ($statusFil === 'ditolak_ke_seksi1') {
@@ -26,14 +30,14 @@ if ($statusFil === 'seksi_1') {
 } elseif ($statusFil === 'seksi_2') {
     $where[] = "b.status_posisi = 'seksi_2'";
 } elseif ($statusFil === 'loket') {
-    $where[] = "b.status_posisi IN ('loket', 'ditolak_ke_loket')";
+    $where[] = "(b.status_posisi = 'loket' OR (b.status_posisi = 'ditolak_ke_loket' AND b.is_diterima_loket = 0))";
 } elseif ($statusFil === 'selesai') {
-    $where[] = "b.status_posisi = 'selesai'";
+    $where[] = "(b.status_posisi = 'selesai' OR (b.status_posisi = 'ditolak_ke_loket' AND b.is_diterima_loket = 1))";
 } elseif ($statusFil === 'all') {
     // Tampilkan semua status
 } else {
     $statusFil = 'selesai';
-    $where[] = "b.status_posisi = 'selesai'";
+    $where[] = "(b.status_posisi = 'selesai' OR (b.status_posisi = 'ditolak_ke_loket' AND b.is_diterima_loket = 1))";
 }
 
 if ($q !== '') {
@@ -53,12 +57,18 @@ $totalPages = max(1, (int) ceil($totalRows / $perPage));
 $page = min($page, $totalPages);
 $offset = ($page - 1) * $perPage;
 
+$orderSql = match ($sort) {
+    'selesai'      => "ORDER BY (b.status_posisi = 'selesai') DESC, b.updated_at DESC, b.id DESC",
+    'dikembalikan' => "ORDER BY (b.status_posisi = 'ditolak_ke_loket') DESC, b.updated_at DESC, b.id DESC",
+    default        => "ORDER BY b.updated_at DESC, b.id DESC",
+};
+
 $sql = "
     SELECT b.*, u.nama_lengkap AS nama_penginput
     FROM berkas b
     LEFT JOIN users u ON u.id = b.diinput_oleh
     $whereSql
-    ORDER BY b.updated_at DESC
+    $orderSql
     LIMIT $perPage OFFSET $offset
 ";
 $stmt = $conn->prepare($sql);
@@ -78,22 +88,29 @@ require_once __DIR__ . '/../includes/sidebar.php';
 </div>
 
 <form class="filter-bar row g-2 align-items-center" method="GET">
-    <div class="col-md-6">
+    <div class="col-md-5">
         <div class="input-group">
             <input type="text" name="q" class="form-control" placeholder="Cari nomor berkas, nama pemohon, jenis layanan, atau sertifikat/desa..." value="<?= e($q) ?>">
             <button class="btn btn-primary" type="submit"><i class="bi bi-search me-1"></i> Cari</button>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <select name="status" class="form-select" onchange="this.form.submit()">
-            <option value="selesai" <?= $statusFil === 'selesai' ? 'selected' : '' ?>>Selesai</option>
+            <option value="selesai" <?= $statusFil === 'selesai' ? 'selected' : '' ?>>Selesai / Kembali ke Pemohon</option>
             <option value="all" <?= $statusFil === 'all' ? 'selected' : '' ?>>Semua Status</option>
             <option value="loket" <?= $statusFil === 'loket' ? 'selected' : '' ?>>Sedang di Loket</option>
             <option value="seksi_1" <?= $statusFil === 'seksi_1' ? 'selected' : '' ?>>Sedang di Seksi 1 (Survei &amp; Pemetaan)</option>
             <option value="seksi_2" <?= $statusFil === 'seksi_2' ? 'selected' : '' ?>>Sedang di Seksi 2 (Penetapan Hak &amp; Pendaftaran)</option>
         </select>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
+        <select name="sort" class="form-select" onchange="this.form.submit()">
+            <option value="default" <?= $sort === 'default' ? 'selected' : '' ?>>Urutkan: Waktu Masuk (Default)</option>
+            <option value="selesai" <?= $sort === 'selesai' ? 'selected' : '' ?>>Urutkan: Berkas Selesai</option>
+            <option value="dikembalikan" <?= $sort === 'dikembalikan' ? 'selected' : '' ?>>Urutkan: Kembali ke Pemohon</option>
+        </select>
+    </div>
+    <div class="col-md-1">
         <a href="riwayat.php" class="btn btn-outline-secondary w-100">Reset</a>
     </div>
 </form>
@@ -129,7 +146,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
                         <?php endif; ?>
                     </td>
                     <td class="small"><?= e($b['jenis_layanan']) ?></td>
-                    <td><?= statusBadge($b['status_posisi']) ?></td>
+                    <td><?= statusBadge($b['status_posisi'], (int)$b['is_diterima_loket']) ?></td>
                     <td class="small"><?= e($b['nama_penginput'] ?? '-') ?></td>
                     <td class="small text-muted"><?= formatTanggal($b['updated_at']) ?></td>
                     <td class="text-end">
@@ -147,7 +164,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
     <ul class="pagination justify-content-center">
         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
             <li class="page-item <?= $i === $page ? 'active' : '' ?>">
-                <a class="page-link" href="?q=<?= urlencode($q) ?>&status=<?= urlencode($statusFil) ?>&page=<?= $i ?>"><?= $i ?></a>
+                <a class="page-link" href="?q=<?= urlencode($q) ?>&status=<?= urlencode($statusFil) ?>&sort=<?= urlencode($sort) ?>&page=<?= $i ?>"><?= $i ?></a>
             </li>
         <?php endfor; ?>
     </ul>

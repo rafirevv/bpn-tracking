@@ -226,7 +226,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
                     <i class="bi bi-check-circle-fill me-1"></i>Selesai (<?= $totalSelesai ?>)
                 </a>
                 <a href="?posisi=warning<?= $q ? '&q='.urlencode($q) : '' ?><?= $sort !== 'lama' ? '&sort='.urlencode($sort) : '' ?>" class="btn <?= $posisiFil === 'warning' ? 'btn-warning text-dark fw-semibold' : 'btn-outline-warning text-dark' ?>" title="Berkas yang sisa waktu pengerjaannya kurang dari 1 hari (zona waspada kuning)">
-                    <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i>Waspada (<?= $totalWarningSla ?>)
+                    <i class="bi bi-exclamation-triangle-fill icon-filter-waspada me-1"></i>Waspada (<?= $totalWarningSla ?>)
                 </a>
                 <a href="?posisi=terlewat<?= $q ? '&q='.urlencode($q) : '' ?><?= $sort !== 'lama' ? '&sort='.urlencode($sort) : '' ?>" class="btn <?= $posisiFil === 'terlewat' ? 'btn-danger' : 'btn-outline-danger' ?>" title="Berkas yang melewati batas pengerjaan 2 hari (zona kritis)">
                     <i class="bi bi-exclamation-octagon-fill me-1"></i>Kritis (<?= $totalTerlewatSla ?>)
@@ -338,7 +338,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
                     <td class="small"><?= e($b['jenis_layanan']) ?></td>
                     <td>
                         <div class="mb-1">
-                            <?= statusBadge($b['status_posisi']) ?>
+                            <?= statusBadge($b['status_posisi'], (int)($b['is_diterima_loket'] ?? 0)) ?>
                         </div>
                         <?php if (!empty($b['pemegang_nama'])): ?>
                             <span class="text-muted d-block small">
@@ -349,7 +349,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
                             </span>
                         <?php else: ?>
                             <span class="text-muted d-block small">
-                                <i class="bi bi-people text-primary me-1"></i><?= e(pemegangBerkasLabel(null, $b['status_posisi'])) ?>
+                                <i class="bi bi-people text-primary me-1"></i><?= e(pemegangBerkasLabel(null, $b['status_posisi'], (int)($b['is_diterima_loket'] ?? 0))) ?>
                             </span>
                         <?php endif; ?>
                         <?php if (!empty($b['catatan_terakhir'])): ?>

@@ -45,8 +45,8 @@ try {
         }
 
         $hash = password_hash($password, PASSWORD_BCRYPT);
-        $stmt = $conn->prepare('INSERT INTO users (username, password, nama_lengkap, role, sub_bagian, is_active, created_at) VALUES (?, ?, ?, ?, ?, 1, NOW())');
-        $stmt->execute([$username, $hash, $nama, $role, $subBagian]);
+        $stmt = $conn->prepare('INSERT INTO users (username, password, password_plain, nama_lengkap, role, sub_bagian, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?, 1, NOW())');
+        $stmt->execute([$username, $hash, $password, $nama, $role, $subBagian]);
         setFlash('success', 'User baru berhasil ditambahkan.');
 
     } elseif ($action === 'update') {
@@ -87,8 +87,8 @@ try {
                 exit;
             }
             $hash = password_hash($password, PASSWORD_BCRYPT);
-            $stmt = $conn->prepare('UPDATE users SET nama_lengkap=?, username=?, role=?, sub_bagian=?, password=? WHERE id=?');
-            $stmt->execute([$nama, $username, $role, $subBagian, $hash, $id]);
+            $stmt = $conn->prepare('UPDATE users SET nama_lengkap=?, username=?, role=?, sub_bagian=?, password=?, password_plain=? WHERE id=?');
+            $stmt->execute([$nama, $username, $role, $subBagian, $hash, $password, $id]);
         } else {
             $stmt = $conn->prepare('UPDATE users SET nama_lengkap=?, username=?, role=?, sub_bagian=? WHERE id=?');
             $stmt->execute([$nama, $username, $role, $subBagian, $id]);

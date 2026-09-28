@@ -69,12 +69,10 @@ $flash = getFlash();
     <div class="auth-panel-form">
         <div class="auth-card">
             <!-- Logo Polos Tanpa Background/Wadah Melingkar -->
-            <div class="text-center mb-2">
+            <div class="text-center mb-4">
                 <img src="<?= baseUrl('assets/img/logo-bpn.png') ?>?v=<?= time() ?>" alt="Logo ATR/BPN" class="auth-card-logo">
-                <h2 class="auth-card-title">Masuk Sistem</h2>
-                <p class="auth-card-desc">
-                    Silakan masukkan akun Anda untuk mengakses sistem monitoring berkas.
-                </p>
+                <h2 class="auth-card-title">Selamat Datang</h2>
+                <p class="auth-card-desc mb-0">Silakan masuk menggunakan akun terdaftar Anda</p>
             </div>
 
             <?php if ($flash): ?>
@@ -114,7 +112,7 @@ $flash = getFlash();
 
                 <!-- Tombol Submit -->
                 <button type="submit" class="btn btn-auth-submit w-100">
-                    <span>Masuk ke Sistem</span>
+                    <span>Masuk</span>
                     <i class="bi bi-arrow-right"></i>
                 </button>
             </form>

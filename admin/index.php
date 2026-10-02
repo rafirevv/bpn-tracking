@@ -14,13 +14,23 @@ foreach ($rows as $r) {
         $statCounts[$r['status_posisi']] = (int) $r['jumlah'];
     }
 }
-$totalBerkas = array_sum($statCounts);
 
 // Hitung total berkas berdasarkan posisi unit
-$totalLoket  = $statCounts['loket'] + $statCounts['ditolak_ke_loket'];
+// Khusus Loket: hanya hitung berkas baru/draft di loket ('loket') dan berkas ditolak yang masih aktif di Loket ('ditolak_ke_loket' AND is_diterima_loket = 0).
+// Berkas yang sudah dikembalikan ke pemohon ('ditolak_ke_loket' AND is_diterima_loket = 1) sudah tidak berada di loket dan hanya tampil di Riwayat Berkas.
+$totalLoket = (int) $conn->query("
+    SELECT COUNT(*) FROM berkas 
+    WHERE status_posisi = 'loket' 
+       OR (status_posisi = 'ditolak_ke_loket' AND is_diterima_loket = 0)
+")->fetchColumn();
+
 $totalSeksi1 = $statCounts['seksi_1'] + $statCounts['ditolak_ke_seksi1'];
 $totalSeksi2 = $statCounts['seksi_2'];
 $totalSelesai = $statCounts['selesai'];
+
+// Total berkas yang sedang berjalan / dipantau di dashboard tracking (Loket + Seksi 1 + Seksi 2 + Selesai)
+// Berkas yang sudah dikembalikan ke pemohon tidak lagi muncul di tracking aktif dan hanya tampil di riwayat berkas.
+$totalBerkas = $totalLoket + $totalSeksi1 + $totalSeksi2 + $totalSelesai;
 
 $nowStr = date('Y-m-d H:i:s');
 $warningLimitStr = date('Y-m-d H:i:s', strtotime('+1 day'));
@@ -29,6 +39,7 @@ $warningLimitStr = date('Y-m-d H:i:s', strtotime('+1 day'));
 $stmtWarn = $conn->prepare("
     SELECT COUNT(*) FROM berkas 
     WHERE status_posisi IN ('loket','seksi_1','seksi_2','ditolak_ke_loket','ditolak_ke_seksi1')
+      AND NOT (status_posisi = 'ditolak_ke_loket' AND is_diterima_loket = 1)
       AND deadline_at IS NOT NULL 
       AND (
           (status_posisi = 'ditolak_ke_loket' AND sisa_sla_detik IS NOT NULL AND sisa_sla_detik >= 0 AND sisa_sla_detik <= 86400)
@@ -42,6 +53,7 @@ $totalWarningSla = (int) $stmtWarn->fetchColumn();
 $stmtLate = $conn->prepare("
     SELECT COUNT(*) FROM berkas 
     WHERE status_posisi IN ('loket','seksi_1','seksi_2','ditolak_ke_loket','ditolak_ke_seksi1')
+      AND NOT (status_posisi = 'ditolak_ke_loket' AND is_diterima_loket = 1)
       AND deadline_at IS NOT NULL 
       AND (
           (status_posisi = 'ditolak_ke_loket' AND sisa_sla_detik IS NOT NULL AND sisa_sla_detik < 0)
@@ -62,7 +74,7 @@ $where = [];
 $params = [];
 
 if ($posisiFil === 'loket') {
-    $where[] = "b.status_posisi IN ('loket', 'ditolak_ke_loket')";
+    $where[] = "(b.status_posisi = 'loket' OR (b.status_posisi = 'ditolak_ke_loket' AND b.is_diterima_loket = 0))";
 } elseif ($posisiFil === 'seksi_1') {
     $where[] = "b.status_posisi IN ('seksi_1', 'ditolak_ke_seksi1')";
 } elseif ($posisiFil === 'seksi_2') {
@@ -70,18 +82,26 @@ if ($posisiFil === 'loket') {
 } elseif ($posisiFil === 'selesai') {
     $where[] = "b.status_posisi = 'selesai'";
 } elseif ($posisiFil === 'warning') {
-    $where[] = "b.status_posisi IN ('loket','seksi_1','seksi_2','ditolak_ke_loket','ditolak_ke_seksi1') AND b.deadline_at IS NOT NULL AND (
+    $where[] = "b.status_posisi IN ('loket','seksi_1','seksi_2','ditolak_ke_loket','ditolak_ke_seksi1') 
+                AND NOT (b.status_posisi = 'ditolak_ke_loket' AND b.is_diterima_loket = 1)
+                AND b.deadline_at IS NOT NULL AND (
         (b.status_posisi = 'ditolak_ke_loket' AND b.sisa_sla_detik IS NOT NULL AND b.sisa_sla_detik >= 0 AND b.sisa_sla_detik <= 86400)
         OR (b.status_posisi != 'ditolak_ke_loket' AND b.deadline_at >= ? AND b.deadline_at <= ?)
     )";
     $params[] = $nowStr;
     $params[] = $warningLimitStr;
 } elseif ($posisiFil === 'terlewat') {
-    $where[] = "b.status_posisi IN ('loket','seksi_1','seksi_2','ditolak_ke_loket','ditolak_ke_seksi1') AND b.deadline_at IS NOT NULL AND (
+    $where[] = "b.status_posisi IN ('loket','seksi_1','seksi_2','ditolak_ke_loket','ditolak_ke_seksi1') 
+                AND NOT (b.status_posisi = 'ditolak_ke_loket' AND b.is_diterima_loket = 1)
+                AND b.deadline_at IS NOT NULL AND (
         (b.status_posisi = 'ditolak_ke_loket' AND b.sisa_sla_detik IS NOT NULL AND b.sisa_sla_detik < 0)
         OR (b.status_posisi != 'ditolak_ke_loket' AND b.deadline_at < ?)
     )";
     $params[] = $nowStr;
+} else {
+    // Posisi 'semua' (Default): Tampilkan semua berkas aktif & selesai di tracking,
+    // berkas yang sudah dikembalikan ke pemohon tidak muncul dan hanya tampil di riwayat berkas.
+    $where[] = "NOT (b.status_posisi = 'ditolak_ke_loket' AND b.is_diterima_loket = 1)";
 }
 
 if ($q !== '') {

@@ -581,7 +581,7 @@ function getOverdueBerkasUser(PDO $conn, int $userId, string $role): array
                 LEFT JOIN users u ON u.id = b.petugas_tujuan_id
                 WHERE (
                     (b.status_posisi IN ('seksi_1','seksi_2','ditolak_ke_seksi1') AND b.deadline_at IS NOT NULL AND b.deadline_at < ?)
-                    OR (b.status_posisi = 'ditolak_ke_loket' AND (
+                    OR (b.status_posisi = 'ditolak_ke_loket' AND b.is_diterima_loket = 0 AND (
                         (b.sisa_sla_detik IS NOT NULL AND b.sisa_sla_detik < 0)
                         OR (b.sisa_sla_detik IS NULL AND b.deadline_at IS NOT NULL AND b.deadline_at < ?)
                     ))
@@ -640,7 +640,7 @@ function getWarningBerkasUser(PDO $conn, int $userId, string $role): array
                 LEFT JOIN users u ON u.id = b.petugas_tujuan_id
                 WHERE (
                     (b.status_posisi IN ('seksi_1','seksi_2','ditolak_ke_seksi1') AND b.deadline_at IS NOT NULL AND b.deadline_at >= ? AND b.deadline_at <= ?)
-                    OR (b.status_posisi = 'ditolak_ke_loket' AND (
+                    OR (b.status_posisi = 'ditolak_ke_loket' AND b.is_diterima_loket = 0 AND (
                         (b.sisa_sla_detik IS NOT NULL AND b.sisa_sla_detik >= 0 AND b.sisa_sla_detik <= 86400)
                         OR (b.sisa_sla_detik IS NULL AND b.deadline_at IS NOT NULL AND b.deadline_at >= ? AND b.deadline_at <= ?)
                     ))

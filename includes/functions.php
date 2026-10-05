@@ -78,14 +78,43 @@ function roleLabel(string $role): string
 }
 
 /**
- * Menghitung path relatif ke root aplikasi berdasarkan kedalaman folder saat ini,
- * supaya link antar modul (admin/loket/seksi1/seksi2) tetap konsisten.
+ * Menghasilkan URL root aplikasi secara dinamis, baik saat diakses lewat Virtual Host
+ * (mis. http://bpn-tracking.test/) maupun subfolder (mis. http://localhost/bpn-tracking/).
  */
 function baseUrl(string $path = ''): string
 {
-    // Semua file entry point berada satu level di bawah root (mis. /loket/index.php)
-    // kecuali file di root itu sendiri (index.php, detail.php).
-    return '/bpn-tracking/' . ltrim($path, '/');
+    static $base = null;
+    if ($base === null) {
+        $projectRoot = str_replace('\\', '/', realpath(__DIR__ . '/..') ?: dirname(__DIR__));
+        $docRoot = isset($_SERVER['DOCUMENT_ROOT']) ? str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT']) ?: $_SERVER['DOCUMENT_ROOT']) : '';
+
+        $docRoot = rtrim($docRoot, '/');
+        $projectRoot = rtrim($projectRoot, '/');
+
+        if (!empty($docRoot) && stripos($projectRoot, $docRoot) === 0) {
+            $subPath = substr($projectRoot, strlen($docRoot));
+            $base = '/' . trim($subPath, '/');
+            if ($base === '/') {
+                $base = '';
+            }
+        } else {
+            // Deteksi berdasarkan folder script jika DOCUMENT_ROOT tidak cocok
+            $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
+            $folderName = basename($projectRoot);
+            $pos = strpos($scriptDir, '/' . $folderName);
+            if ($pos !== false) {
+                $base = substr($scriptDir, 0, $pos + strlen($folderName) + 1);
+            } else {
+                $base = '';
+            }
+        }
+    }
+
+    $cleanPath = ltrim($path, '/');
+    if ($base === '') {
+        return '/' . $cleanPath;
+    }
+    return rtrim($base, '/') . '/' . $cleanPath;
 }
 
 /* ==========================================================

@@ -205,6 +205,9 @@ require_once __DIR__ . '/../includes/sidebar.php';
                                 <a href="<?= baseUrl('detail.php?id=' . (int) $b['id']) ?>" class="text-decoration-none">
                                     <?= e($b['nomor_pendaftaran']) ?>
                                 </a>
+                                <?php if (!empty($b['foto_bidang'])): ?>
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1" title="Disertai upload foto bidang" style="font-size: 0.65rem;"><i class="bi bi-camera me-1"></i>Foto</span>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <div class="fw-semibold"><?= e($b['nama_pemohon']) ?></div>

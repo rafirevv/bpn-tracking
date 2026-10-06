@@ -148,6 +148,24 @@ require_once __DIR__ . '/../includes/sidebar.php';
                 <?php if (!empty($berkas['deskripsi_berkas']) && $berkas['deskripsi_berkas'] !== $berkas['sertifikat_desa']): ?>
                 <div class="mb-3"><div class="text-muted small">Kelengkapan / Catatan</div><div style="white-space:pre-line;"><?= e($berkas['deskripsi_berkas']) ?></div></div>
                 <?php endif; ?>
+                <?php if (!empty($berkas['foto_bidang'])): 
+                    $fotoUrl = fotoBidangUrl($berkas['foto_bidang']);
+                ?>
+                <div class="mb-3">
+                    <div class="text-muted small mb-1 d-flex align-items-center justify-content-between">
+                        <span><i class="bi bi-image text-primary me-1"></i>Foto Bidang Tanah</span>
+                        <a href="<?= e($fotoUrl) ?>" target="_blank" class="small text-muted text-decoration-none d-inline-flex align-items-center gap-1" title="Buka gambar ukuran penuh">
+                            <span>Buka Penuh</span>
+                            <i class="bi bi-arrow-up-right" style="font-size: 0.72rem;"></i>
+                        </a>
+                    </div>
+                    <div class="position-relative border rounded overflow-hidden bg-light shadow-sm text-center" style="max-height: 160px;">
+                        <a href="<?= e($fotoUrl) ?>" target="_blank">
+                            <img src="<?= e($fotoUrl) ?>" alt="Foto Bidang" class="img-fluid w-100 object-fit-cover" style="max-height: 160px;">
+                        </a>
+                    </div>
+                </div>
+                <?php endif; ?>
                 <div class="mb-3"><div class="text-muted small">Status Saat Ini</div><div class="mt-1"><?= statusBadge($berkas['status_posisi']) ?></div></div>
                 <div class="mb-0">
                     <div class="text-muted small">Batas Waktu</div>

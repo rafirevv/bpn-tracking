@@ -690,3 +690,110 @@ function getWarningBerkasUser(PDO $conn, int $userId, string $role): array
    ========================================================== */
 require_once __DIR__ . '/notification_helper.php';
 
+/* ==========================================================
+   FOTO BIDANG HELPER
+   ========================================================== */
+
+/**
+ * Direktori penyimpanan upload foto bidang tanah
+ */
+function getFotoBidangDir(): string
+{
+    $dir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'foto_bidang' . DIRECTORY_SEPARATOR;
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0755, true);
+    }
+    return $dir;
+}
+
+/**
+ * Mendapatkan URL publik untuk file foto bidang tanah
+ */
+function fotoBidangUrl(?string $filename): ?string
+{
+    if (empty($filename)) {
+        return null;
+    }
+    return baseUrl('uploads/foto_bidang/' . rawurlencode($filename));
+}
+
+/**
+ * Menghapus file foto bidang tanah dari direktori upload
+ */
+function hapusFotoBidang(?string $filename): bool
+{
+    if (empty($filename)) {
+        return false;
+    }
+    $file = getFotoBidangDir() . basename($filename);
+    if (is_file($file)) {
+        return @unlink($file);
+    }
+    return false;
+}
+
+/**
+ * Memvalidasi dan menyimpan upload foto bidang
+ * Mendukung format JPG, JPEG, PNG, WEBP dengan ukuran maks. 5MB.
+ *
+ * @param array $file Array dari $_FILES['foto_bidang']
+ * @return array ['success' => bool, 'filename' => ?string, 'error' => ?string]
+ */
+function uploadFotoBidang(array $file): array
+{
+    if (!isset($file['error']) || is_array($file['error'])) {
+        return ['success' => false, 'filename' => null, 'error' => 'Parameter file upload tidak valid.'];
+    }
+
+    // Jika tidak ada file yang dipilih (opsional)
+    if ($file['error'] === UPLOAD_ERR_NO_FILE) {
+        return ['success' => true, 'filename' => null, 'error' => null];
+    }
+
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        $uploadErrors = [
+            UPLOAD_ERR_INI_SIZE   => 'Ukuran file melebihi batas upload server (upload_max_filesize).',
+            UPLOAD_ERR_FORM_SIZE  => 'Ukuran file melebihi batas maksimum formulir.',
+            UPLOAD_ERR_PARTIAL    => 'File hanya terunggah sebagian. Silakan ulangi upload.',
+            UPLOAD_ERR_NO_TMP_DIR => 'Folder temporary server tidak tersedia.',
+            UPLOAD_ERR_CANT_WRITE => 'Gagal menulis file ke media penyimpanan server.',
+            UPLOAD_ERR_EXTENSION  => 'Proses upload dihentikan oleh modul PHP.',
+        ];
+        $msg = $uploadErrors[$file['error']] ?? 'Terjadi kesalahan saat mengunggah foto.';
+        return ['success' => false, 'filename' => null, 'error' => $msg];
+    }
+
+    // Batas ukuran 5 MB (5 * 1024 * 1024 byte)
+    $maxBytes = 5 * 1024 * 1024;
+    if ($file['size'] > $maxBytes) {
+        return ['success' => false, 'filename' => null, 'error' => 'Ukuran foto maksimal adalah 5 MB.'];
+    }
+
+    // Validasi ekstensi
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
+    if (!in_array($ext, $allowedExts, true)) {
+        return ['success' => false, 'filename' => null, 'error' => 'Format file tidak didukung. Harap upload foto dengan format JPG, JPEG, PNG, atau WEBP.'];
+    }
+
+    // Validasi MIME type jika finfo tersedia
+    if (class_exists('finfo')) {
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->file($file['tmp_name']);
+        $allowedMimes = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/x-png', 'image/webp'];
+        if (!in_array($mime, $allowedMimes, true)) {
+            return ['success' => false, 'filename' => null, 'error' => 'File yang dipilih bukan berkas gambar yang valid.'];
+        }
+    }
+
+    $uploadDir = getFotoBidangDir();
+    $uniqueName = 'bidang_' . date('Ymd_His') . '_' . bin2hex(random_bytes(6)) . '.' . $ext;
+    $destPath = $uploadDir . $uniqueName;
+
+    if (!move_uploaded_file($file['tmp_name'], $destPath)) {
+        return ['success' => false, 'filename' => null, 'error' => 'Gagal memindahkan file foto ke direktori tujuan.'];
+    }
+
+    return ['success' => true, 'filename' => $uniqueName, 'error' => null];
+}
+

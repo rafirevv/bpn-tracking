@@ -46,6 +46,18 @@ if ($checkStmt->fetch()) {
     exit;
 }
 
+// Proses upload foto bidang jika disertakan
+$fotoBidang = null;
+if (isset($_FILES['foto_bidang']) && $_FILES['foto_bidang']['error'] !== UPLOAD_ERR_NO_FILE) {
+    $uploadRes = uploadFotoBidang($_FILES['foto_bidang']);
+    if (!$uploadRes['success']) {
+        setFlash('danger', 'Gagal mengunggah foto bidang: ' . $uploadRes['error']);
+        header('Location: tambah.php');
+        exit;
+    }
+    $fotoBidang = $uploadRes['filename'];
+}
+
 try {
     $conn->beginTransaction();
 
@@ -56,17 +68,18 @@ try {
         $deadlineAt   = date('Y-m-d H:i:s', strtotime('+2 days'));
 
         $stmt = $conn->prepare("
-            INSERT INTO berkas (nomor_pendaftaran, nama_pemohon, jenis_layanan, sertifikat_desa, deskripsi_berkas, status_posisi, diinput_oleh, petugas_tujuan_id, deadline_at, is_diterima_loket, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, NULL, ?, 0, NOW(), NOW())
+            INSERT INTO berkas (nomor_pendaftaran, nama_pemohon, jenis_layanan, sertifikat_desa, foto_bidang, deskripsi_berkas, status_posisi, diinput_oleh, petugas_tujuan_id, deadline_at, is_diterima_loket, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, 0, NOW(), NOW())
         ");
-        $stmt->execute([$nomor, $nama, $jenis, $sertifikat, $sertifikat, $statusPosisi, $_SESSION['user_id'], $deadlineAt]);
+        $stmt->execute([$nomor, $nama, $jenis, $sertifikat, $fotoBidang, $sertifikat, $statusPosisi, $_SESSION['user_id'], $deadlineAt]);
         $idBerkas = (int) $conn->lastInsertId();
 
         $logInput = $conn->prepare("
             INSERT INTO log_pergerakan (id_berkas, pengirim_id, penerima_id, aksi, status_sebelum, status_sesudah, catatan, created_at)
             VALUES (?, ?, NULL, 'diinput', NULL, 'loket', ?, NOW())
         ");
-        $logInput->execute([$idBerkas, $_SESSION['user_id'], "Berkas didaftarkan di loket oleh $petugasNama."]);
+        $catatanInput = "Berkas didaftarkan di loket oleh $petugasNama." . ($fotoBidang ? " Disertai upload foto bidang." : "");
+        $logInput->execute([$idBerkas, $_SESSION['user_id'], $catatanInput]);
 
         $logKirim = $conn->prepare("
             INSERT INTO log_pergerakan (id_berkas, pengirim_id, penerima_id, aksi, status_sebelum, status_sesudah, catatan, created_at)
@@ -86,17 +99,18 @@ try {
         $deadlineAt   = date('Y-m-d H:i:s', strtotime('+2 days'));
 
         $stmt = $conn->prepare("
-            INSERT INTO berkas (nomor_pendaftaran, nama_pemohon, jenis_layanan, sertifikat_desa, deskripsi_berkas, status_posisi, diinput_oleh, petugas_tujuan_id, deadline_at, is_diterima_loket, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, NULL, ?, 0, NOW(), NOW())
+            INSERT INTO berkas (nomor_pendaftaran, nama_pemohon, jenis_layanan, sertifikat_desa, foto_bidang, deskripsi_berkas, status_posisi, diinput_oleh, petugas_tujuan_id, deadline_at, is_diterima_loket, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, 0, NOW(), NOW())
         ");
-        $stmt->execute([$nomor, $nama, $jenis, $sertifikat, $sertifikat, $statusPosisi, $_SESSION['user_id'], $deadlineAt]);
+        $stmt->execute([$nomor, $nama, $jenis, $sertifikat, $fotoBidang, $sertifikat, $statusPosisi, $_SESSION['user_id'], $deadlineAt]);
         $idBerkas = (int) $conn->lastInsertId();
 
         $logInput = $conn->prepare("
             INSERT INTO log_pergerakan (id_berkas, pengirim_id, penerima_id, aksi, status_sebelum, status_sesudah, catatan, created_at)
             VALUES (?, ?, NULL, 'diinput', NULL, 'loket', ?, NOW())
         ");
-        $logInput->execute([$idBerkas, $_SESSION['user_id'], "Berkas didaftarkan di loket oleh $petugasNama."]);
+        $catatanInput = "Berkas didaftarkan di loket oleh $petugasNama." . ($fotoBidang ? " Disertai upload foto bidang." : "");
+        $logInput->execute([$idBerkas, $_SESSION['user_id'], $catatanInput]);
 
         $logKirim = $conn->prepare("
             INSERT INTO log_pergerakan (id_berkas, pengirim_id, penerima_id, aksi, status_sebelum, status_sesudah, catatan, created_at)
@@ -117,17 +131,18 @@ try {
         $deadlineAt   = null;
 
         $stmt = $conn->prepare("
-            INSERT INTO berkas (nomor_pendaftaran, nama_pemohon, jenis_layanan, sertifikat_desa, deskripsi_berkas, status_posisi, diinput_oleh, petugas_tujuan_id, deadline_at, is_diterima_loket, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, NULL, ?, 0, NOW(), NOW())
+            INSERT INTO berkas (nomor_pendaftaran, nama_pemohon, jenis_layanan, sertifikat_desa, foto_bidang, deskripsi_berkas, status_posisi, diinput_oleh, petugas_tujuan_id, deadline_at, is_diterima_loket, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, 0, NOW(), NOW())
         ");
-        $stmt->execute([$nomor, $nama, $jenis, $sertifikat, $sertifikat, $statusPosisi, $_SESSION['user_id'], $deadlineAt]);
+        $stmt->execute([$nomor, $nama, $jenis, $sertifikat, $fotoBidang, $sertifikat, $statusPosisi, $_SESSION['user_id'], $deadlineAt]);
         $idBerkas = (int) $conn->lastInsertId();
 
         $logInput = $conn->prepare("
             INSERT INTO log_pergerakan (id_berkas, pengirim_id, penerima_id, aksi, status_sebelum, status_sesudah, catatan, created_at)
             VALUES (?, ?, NULL, 'diinput', NULL, 'loket', ?, NOW())
         ");
-        $logInput->execute([$idBerkas, $_SESSION['user_id'], "Berkas didaftarkan di loket oleh $petugasNama (menunggu konfirmasi pengiriman ke seksi)."]);
+        $catatanInput = "Berkas didaftarkan di loket oleh $petugasNama (menunggu konfirmasi pengiriman ke seksi)." . ($fotoBidang ? " Disertai upload foto bidang." : "");
+        $logInput->execute([$idBerkas, $_SESSION['user_id'], $catatanInput]);
 
         // Kirim notifikasi in-app untuk admin
         kirimNotifikasi($conn, $idBerkas, 'admin', 'Berkas Baru Diinput (Draft)', "Berkas No. $nomor diinput di Loket (menunggu pengiriman ke seksi).", 'info', "detail.php?id=$idBerkas");
@@ -141,6 +156,9 @@ try {
 
 } catch (Throwable $e) {
     $conn->rollBack();
+    if (!empty($fotoBidang)) {
+        hapusFotoBidang($fotoBidang);
+    }
     error_log('Simpan berkas error: ' . $e->getMessage());
     setFlash('danger', 'Gagal menyimpan berkas. Silakan coba lagi: ' . $e->getMessage());
     header('Location: tambah.php');

@@ -18,7 +18,7 @@ require_once __DIR__ . '/../includes/sidebar.php';
     <a href="index.php" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Kembali</a>
 </div>
 
-<form action="simpan.php" method="POST" id="formTambahBerkas">
+<form action="simpan.php" method="POST" id="formTambahBerkas" enctype="multipart/form-data">
     <?= csrfField() ?>
     <div class="card shadow-sm mb-3">
         <div class="card-header py-2 px-3 fw-semibold d-flex align-items-center justify-content-between bg-white border-bottom">
@@ -94,6 +94,52 @@ require_once __DIR__ . '/../includes/sidebar.php';
                                     <input type="text" name="sertifikat_desa" id="sertifikat_desa" class="form-control" required maxlength="255" placeholder="Nomor Sertifikat (atau nama Desa)">
                                 </div>
                                 <div class="form-text text-muted" style="font-size: 0.72rem; margin-top: 3px;">Nomor sertifikat atau nama kelurahan/desa.</div>
+                            </div>
+
+                            <!-- Upload Foto Bidang -->
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small mb-1" for="foto_bidang">
+                                    <i class="bi bi-camera me-1 text-primary"></i>Upload Foto Bidang
+                                    <span class="badge bg-light text-secondary border ms-1 fw-normal" style="font-size:0.68rem;">Opsional</span>
+                                </label>
+                                <div class="upload-dropzone p-3 rounded-3 text-center border position-relative" id="dropzoneFoto" style="border: 2px dashed #CBD5E1; background: #F8FAFC; transition: all 0.2s ease;">
+                                    <input type="file" name="foto_bidang" id="foto_bidang" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="cursor: pointer; z-index: 5;" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+                                    
+                                    <!-- State Default (Belum Ada File Dipilih) -->
+                                    <div id="uploadPrompt" class="py-2">
+                                        <div class="mb-2">
+                                            <div class="rounded-circle bg-primary-subtle text-primary d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px;">
+                                                <i class="bi bi-cloud-arrow-up fs-5"></i>
+                                            </div>
+                                        </div>
+                                        <div class="fw-semibold text-dark small mb-1">
+                                            upload foto bidang
+                                        </div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">
+                                            Klik untuk memilih file atau seret foto ke sini (JPG, JPEG, PNG, WEBP &bull; Maks. 5 MB)
+                                        </div>
+                                    </div>
+
+                                    <!-- State Preview (File Sudah Dipilih) -->
+                                    <div id="uploadPreview" class="d-none align-items-center justify-content-between p-2 bg-white rounded-2 border text-start shadow-sm" style="position: relative; z-index: 10;">
+                                        <div class="d-flex align-items-center gap-3 overflow-hidden">
+                                            <img id="imgPreviewThumb" src="" alt="Preview Foto Bidang" class="rounded object-fit-cover border" style="width: 52px; height: 52px; flex-shrink: 0;">
+                                            <div class="overflow-hidden">
+                                                <div class="fw-bold text-dark small text-truncate" id="previewFileName">foto.jpg</div>
+                                                <div class="text-muted" style="font-size: 0.72rem;" id="previewFileSize">0 KB</div>
+                                                <span class="badge text-bg-success-subtle text-success border border-success-subtle" style="font-size: 0.68rem;">
+                                                    <i class="bi bi-check-circle me-1"></i>Foto bidang siap diupload
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" id="btnHapusFoto" title="Hapus foto ini">
+                                            <i class="bi bi-trash me-1"></i>Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-text text-muted" style="font-size: 0.72rem; margin-top: 4px;">
+                                    <strong>Upload foto bidang</strong>: Lampirkan foto fisik bidang tanah atau patok batas lokasi untuk memudahkan verifikasi survei &amp; pengukuran.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -268,6 +314,88 @@ function updateTujuanUI() {
 
 radios.forEach(r => r.addEventListener('change', updateTujuanUI));
 updateTujuanUI();
+
+// Penanganan Upload & Preview Foto Bidang
+const fotoInput = document.getElementById('foto_bidang');
+const dropzone = document.getElementById('dropzoneFoto');
+const uploadPrompt = document.getElementById('uploadPrompt');
+const uploadPreview = document.getElementById('uploadPreview');
+const imgPreviewThumb = document.getElementById('imgPreviewThumb');
+const previewFileName = document.getElementById('previewFileName');
+const previewFileSize = document.getElementById('previewFileSize');
+const btnHapusFoto = document.getElementById('btnHapusFoto');
+
+function formatBytes(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function handleFotoSelected(file) {
+    if (!file) return;
+
+    // Validasi tipe file
+    if (!file.type.match(/^image\/(jpeg|jpg|png|webp)$/i)) {
+        alert('Harap pilih file foto gambar dengan format JPG, JPEG, PNG, atau WEBP.');
+        fotoInput.value = '';
+        return;
+    }
+
+    // Validasi ukuran file (5 MB)
+    const maxBytes = 5 * 1024 * 1024;
+    if (file.size > maxBytes) {
+        alert('Ukuran foto melebihi 5 MB (' + formatBytes(file.size) + '). Harap gunakan foto dengan ukuran maksimal 5 MB.');
+        fotoInput.value = '';
+        return;
+    }
+
+    previewFileName.textContent = file.name;
+    previewFileSize.textContent = formatBytes(file.size);
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        imgPreviewThumb.src = e.target.result;
+        uploadPrompt.classList.add('d-none');
+        uploadPreview.classList.remove('d-none');
+        uploadPreview.classList.add('d-flex');
+    };
+    reader.readAsDataURL(file);
+}
+
+fotoInput?.addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+        handleFotoSelected(this.files[0]);
+    }
+});
+
+btnHapusFoto?.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    fotoInput.value = '';
+    imgPreviewThumb.src = '';
+    uploadPreview.classList.add('d-none');
+    uploadPreview.classList.remove('d-flex');
+    uploadPrompt.classList.remove('d-none');
+});
+
+// Drag and drop efek visual
+['dragenter', 'dragover'].forEach(eventName => {
+    dropzone?.addEventListener(eventName, function(e) {
+        e.preventDefault();
+        dropzone.style.borderColor = 'var(--bs-primary, #0d6efd)';
+        dropzone.style.backgroundColor = '#EFF6FF';
+    }, false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+    dropzone?.addEventListener(eventName, function(e) {
+        e.preventDefault();
+        dropzone.style.borderColor = '#CBD5E1';
+        dropzone.style.backgroundColor = '#F8FAFC';
+    }, false);
+});
 </script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

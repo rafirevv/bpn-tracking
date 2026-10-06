@@ -189,6 +189,25 @@ if ($isKembaliPemohon) {
                     <div class="text-muted small">Sertifikat / Desa</div>
                     <div class="fw-semibold text-primary"><?= e($berkas['sertifikat_desa'] ?: ($berkas['deskripsi_berkas'] ?: '-')) ?></div>
                 </div>
+                <?php if (!empty($berkas['foto_bidang'])): 
+                    $fotoUrl = fotoBidangUrl($berkas['foto_bidang']);
+                ?>
+                <div class="mb-3">
+                    <div class="text-muted small mb-1 d-flex align-items-center justify-content-between">
+                        <span><i class="bi bi-image text-primary me-1"></i>Foto Bidang</span>
+                        <a href="<?= e($fotoUrl) ?>" target="_blank" class="small text-muted text-decoration-none d-inline-flex align-items-center gap-1" title="Buka gambar ukuran penuh">
+                            <span>Buka Penuh</span>
+                            <i class="bi bi-arrow-up-right" style="font-size: 0.72rem;"></i>
+                        </a>
+                    </div>
+                    <div class="position-relative border rounded-3 overflow-hidden bg-light shadow-sm text-center" style="max-height: 200px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalFotoBidang" title="Klik untuk memperbesar">
+                        <img src="<?= e($fotoUrl) ?>" alt="Foto Bidang <?= e($berkas['nomor_pendaftaran']) ?>" class="img-fluid w-100 object-fit-cover" style="max-height: 200px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                        <div class="position-absolute bottom-0 start-0 end-0 py-1 px-2 text-white small text-center" style="background: rgba(0,0,0,0.55); font-size: 0.72rem;">
+                            <span><i class="bi bi-zoom-in me-1"></i>Klik untuk melihat</span>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
                 <?php if (!empty($berkas['nik'])): ?>
                 <div class="mb-3">
                     <div class="text-muted small">NIK</div>
@@ -294,5 +313,27 @@ if ($isKembaliPemohon) {
         </div>
     </div>
 </div>
+
+<?php if (!empty($berkas['foto_bidang'])): ?>
+<div class="modal fade" id="modalFotoBidang" tabindex="-1" aria-labelledby="modalFotoBidangLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-light py-2 px-3">
+                <h5 class="modal-title fs-6 fw-bold text-dark" id="modalFotoBidangLabel">
+                    <i class="bi bi-image text-primary me-2"></i>Foto Bidang &mdash; No. Berkas <?= e($berkas['nomor_pendaftaran']) ?>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body text-center p-2 bg-dark">
+                <img src="<?= e(fotoBidangUrl($berkas['foto_bidang'])) ?>" alt="Foto Bidang" class="img-fluid rounded" style="max-height: 75vh; object-fit: contain;">
+            </div>
+            <div class="modal-footer py-2 px-3 d-flex justify-content-between align-items-center bg-light">
+                <span class="text-muted small">Pemohon: <strong><?= e($berkas['nama_pemohon']) ?></strong> (<?= e($berkas['sertifikat_desa']) ?>)</span>
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

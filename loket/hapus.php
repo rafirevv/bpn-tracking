@@ -32,6 +32,11 @@ try {
     $delBerkas = $conn->prepare("DELETE FROM berkas WHERE id = ?");
     $delBerkas->execute([$id]);
 
+    // Hapus file foto jika ada
+    if (!empty($berkas['foto_bidang'])) {
+        hapusFotoBidang($berkas['foto_bidang']);
+    }
+
     $conn->commit();
     setFlash('success', 'Berkas ' . e($berkas['nomor_pendaftaran']) . ' berhasil dihapus dari antrean Loket.');
 

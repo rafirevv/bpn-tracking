@@ -158,6 +158,24 @@ require_once __DIR__ . '/../includes/sidebar.php';
                         <div class="text-muted small">Sertifikat / Desa</div>
                         <div class="fw-semibold text-primary"><?= e($singleBerkas['sertifikat_desa'] ?: ($singleBerkas['deskripsi_berkas'] ?: '-')) ?></div>
                     </div>
+                    <?php if (!empty($singleBerkas['foto_bidang'])): 
+                        $fotoUrl = fotoBidangUrl($singleBerkas['foto_bidang']);
+                    ?>
+                    <div class="mb-3">
+                        <div class="text-muted small mb-1 d-flex align-items-center justify-content-between">
+                            <span><i class="bi bi-image text-primary me-1"></i>Foto Bidang Tanah</span>
+                            <a href="<?= e($fotoUrl) ?>" target="_blank" class="small text-muted text-decoration-none d-inline-flex align-items-center gap-1" title="Buka gambar ukuran penuh">
+                                <span>Buka Penuh</span>
+                                <i class="bi bi-arrow-up-right" style="font-size: 0.72rem;"></i>
+                            </a>
+                        </div>
+                        <div class="position-relative border rounded overflow-hidden bg-light shadow-sm text-center" style="max-height: 160px;">
+                            <a href="<?= e($fotoUrl) ?>" target="_blank">
+                                <img src="<?= e($fotoUrl) ?>" alt="Foto Bidang" class="img-fluid w-100 object-fit-cover" style="max-height: 160px;">
+                            </a>
+                        </div>
+                    </div>
+                    <?php endif; ?>
                     <div class="mb-3">
                         <div class="text-muted small">Waktu Input</div>
                         <div class="small"><?= formatTanggal($singleBerkas['created_at']) ?></div>

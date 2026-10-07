@@ -96,49 +96,57 @@ require_once __DIR__ . '/../includes/sidebar.php';
                                 <div class="form-text text-muted" style="font-size: 0.72rem; margin-top: 3px;">Nomor sertifikat atau nama kelurahan/desa.</div>
                             </div>
 
-                            <!-- Upload Foto Bidang -->
+                            <!-- Upload Foto Bidang & Keterangan Foto -->
                             <div class="col-12">
                                 <label class="form-label fw-semibold small mb-1" for="foto_bidang">
                                     <i class="bi bi-camera me-1 text-primary"></i>Upload Foto Bidang
                                     <span class="badge bg-light text-secondary border ms-1 fw-normal" style="font-size:0.68rem;">Opsional</span>
                                 </label>
-                                <div class="upload-dropzone p-3 rounded-3 text-center border position-relative" id="dropzoneFoto" style="border: 2px dashed #CBD5E1; background: #F8FAFC; transition: all 0.2s ease;">
+                                
+                                <div class="upload-dropzone p-3 rounded-3 text-center border position-relative" id="dropzoneFoto" style="border: 1.5px dashed #CBD5E1 !important; background: #F8FAFC; transition: all 0.2s ease;">
                                     <input type="file" name="foto_bidang" id="foto_bidang" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="cursor: pointer; z-index: 5;" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
                                     
                                     <!-- State Default (Belum Ada File Dipilih) -->
-                                    <div id="uploadPrompt" class="py-2">
-                                        <div class="mb-2">
-                                            <div class="rounded-circle bg-primary-subtle text-primary d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px;">
-                                                <i class="bi bi-cloud-arrow-up fs-5"></i>
-                                            </div>
+                                    <div id="uploadPrompt" class="d-flex align-items-center justify-content-center gap-2 py-1">
+                                        <div class="rounded-circle bg-primary-subtle text-primary d-inline-flex align-items-center justify-content-center" style="width: 34px; height: 34px; flex-shrink: 0;">
+                                            <i class="bi bi-cloud-arrow-up fs-5"></i>
                                         </div>
-                                        <div class="fw-semibold text-dark small mb-1">
-                                            upload foto bidang
-                                        </div>
-                                        <div class="text-muted" style="font-size: 0.75rem;">
-                                            Klik untuk memilih file atau seret foto ke sini (JPG, JPEG, PNG, WEBP &bull; Maks. 5 MB)
+                                        <div class="text-start">
+                                            <div class="fw-semibold text-dark small">Pilih foto bidang atau seret file ke sini</div>
+                                            <div class="text-muted" style="font-size: 0.72rem;">JPG, JPEG, PNG, WEBP &bull; Maks. 10 MB</div>
                                         </div>
                                     </div>
 
                                     <!-- State Preview (File Sudah Dipilih) -->
-                                    <div id="uploadPreview" class="d-none align-items-center justify-content-between p-2 bg-white rounded-2 border text-start shadow-sm" style="position: relative; z-index: 10;">
-                                        <div class="d-flex align-items-center gap-3 overflow-hidden">
-                                            <img id="imgPreviewThumb" src="" alt="Preview Foto Bidang" class="rounded object-fit-cover border" style="width: 52px; height: 52px; flex-shrink: 0;">
-                                            <div class="overflow-hidden">
-                                                <div class="fw-bold text-dark small text-truncate" id="previewFileName">foto.jpg</div>
-                                                <div class="text-muted" style="font-size: 0.72rem;" id="previewFileSize">0 KB</div>
-                                                <span class="badge text-bg-success-subtle text-success border border-success-subtle" style="font-size: 0.68rem;">
-                                                    <i class="bi bi-check-circle me-1"></i>Foto bidang siap diupload
+                                    <div id="uploadPreview" class="d-none align-items-center justify-content-between p-1 bg-white rounded-2 border text-start shadow-sm" style="position: relative; z-index: 10;">
+                                        <div class="d-flex align-items-center gap-2 overflow-hidden flex-grow-1" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalPreviewFoto" title="Klik untuk melihat foto ukuran penuh">
+                                            <div class="position-relative flex-shrink-0">
+                                                <img id="imgPreviewThumb" src="" alt="Preview Foto Bidang" class="rounded object-fit-cover border shadow-sm" style="width: 44px; height: 44px; transition: transform 0.15s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+                                                <span class="position-absolute bottom-0 end-0 bg-dark bg-opacity-75 text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 16px; height: 16px; font-size: 9px; pointer-events: none;">
+                                                    <i class="bi bi-zoom-in"></i>
                                                 </span>
                                             </div>
+                                            <div class="overflow-hidden">
+                                                <div class="fw-semibold text-dark small text-truncate" id="previewFileName">foto.jpg</div>
+                                                <div class="text-muted" style="font-size: 0.72rem;">
+                                                    <span id="previewFileSize">0 KB</span> &bull; 
+                                                    <span class="text-success fw-medium"><i class="bi bi-check-circle me-1"></i>Siap diupload</span> &bull;
+                                                    <span class="text-primary"><i class="bi bi-eye me-1"></i>Lihat foto</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" id="btnHapusFoto" title="Hapus foto ini">
+                                        <button type="button" class="btn btn-sm btn-outline-danger py-1 px-2 ms-2 flex-shrink-0" id="btnHapusFoto" title="Hapus foto ini">
                                             <i class="bi bi-trash me-1"></i>Hapus
                                         </button>
                                     </div>
                                 </div>
-                                <div class="form-text text-muted" style="font-size: 0.72rem; margin-top: 4px;">
-                                    <strong>Upload foto bidang</strong>: Lampirkan foto fisik bidang tanah atau patok batas lokasi untuk memudahkan verifikasi survei &amp; pengukuran.
+
+                                <!-- Input Keterangan Foto -->
+                                <div class="mt-2" id="containerKeteranganFoto">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-muted"><i class="bi bi-chat-left-text"></i></span>
+                                        <input type="text" name="keterangan_foto" id="keterangan_foto" class="form-control" maxlength="255" placeholder="Keterangan foto bidang (opsional, cth: patok batas utara, kondisi tanah)">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -238,6 +246,30 @@ require_once __DIR__ . '/../includes/sidebar.php';
     </div>
 </form>
 
+<!-- Modal Preview Foto Bidang -->
+<div class="modal fade" id="modalPreviewFoto" tabindex="-1" aria-labelledby="modalPreviewFotoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-light py-2 px-3">
+                <h5 class="modal-title fs-6 fw-bold text-dark d-flex align-items-center" id="modalPreviewFotoLabel">
+                    <i class="bi bi-image text-primary me-2"></i>Preview Foto Bidang
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2 fw-normal" id="modalPreviewFileName" style="font-size:0.75rem;">foto.jpg</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body text-center p-2 bg-dark">
+                <img id="modalPreviewImg" src="" alt="Preview Foto Bidang" class="img-fluid rounded" style="max-height: 75vh; object-fit: contain;">
+            </div>
+            <div class="modal-footer py-2 px-3 d-flex justify-content-between align-items-center bg-light">
+                <div class="text-muted small">
+                    <i class="bi bi-info-circle me-1"></i>Ukuran: <strong id="modalPreviewFileSize">0 KB</strong>
+                </div>
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 document.getElementById('btnAutoNomor')?.addEventListener('click', function() {
     const input = document.getElementById('nomor_berkas');
@@ -324,6 +356,10 @@ const imgPreviewThumb = document.getElementById('imgPreviewThumb');
 const previewFileName = document.getElementById('previewFileName');
 const previewFileSize = document.getElementById('previewFileSize');
 const btnHapusFoto = document.getElementById('btnHapusFoto');
+const keteranganFoto = document.getElementById('keterangan_foto');
+const modalPreviewImg = document.getElementById('modalPreviewImg');
+const modalPreviewFileName = document.getElementById('modalPreviewFileName');
+const modalPreviewFileSize = document.getElementById('modalPreviewFileSize');
 
 function formatBytes(bytes) {
     if (bytes === 0) return '0 Bytes';
@@ -343,23 +379,34 @@ function handleFotoSelected(file) {
         return;
     }
 
-    // Validasi ukuran file (5 MB)
-    const maxBytes = 5 * 1024 * 1024;
+    // Validasi ukuran file (10 MB)
+    const maxBytes = 10 * 1024 * 1024;
     if (file.size > maxBytes) {
-        alert('Ukuran foto melebihi 5 MB (' + formatBytes(file.size) + '). Harap gunakan foto dengan ukuran maksimal 5 MB.');
+        alert('Ukuran foto melebihi 10 MB (' + formatBytes(file.size) + '). Harap gunakan foto dengan ukuran maksimal 10 MB.');
         fotoInput.value = '';
         return;
     }
 
+    const formattedSize = formatBytes(file.size);
     previewFileName.textContent = file.name;
-    previewFileSize.textContent = formatBytes(file.size);
+    previewFileSize.textContent = formattedSize;
+    if (modalPreviewFileName) modalPreviewFileName.textContent = file.name;
+    if (modalPreviewFileSize) modalPreviewFileSize.textContent = formattedSize;
 
     const reader = new FileReader();
     reader.onload = function(e) {
         imgPreviewThumb.src = e.target.result;
+        if (modalPreviewImg) {
+            modalPreviewImg.src = e.target.result;
+        }
         uploadPrompt.classList.add('d-none');
         uploadPreview.classList.remove('d-none');
         uploadPreview.classList.add('d-flex');
+
+        // Fokus ke kolom keterangan foto
+        if (keteranganFoto) {
+            keteranganFoto.focus();
+        }
     };
     reader.readAsDataURL(file);
 }
@@ -375,9 +422,30 @@ btnHapusFoto?.addEventListener('click', function(e) {
     e.stopPropagation();
     fotoInput.value = '';
     imgPreviewThumb.src = '';
+    if (modalPreviewImg) {
+        modalPreviewImg.src = '';
+    }
     uploadPreview.classList.add('d-none');
     uploadPreview.classList.remove('d-flex');
     uploadPrompt.classList.remove('d-none');
+    if (keteranganFoto) {
+        keteranganFoto.value = '';
+    }
+});
+
+// Sinkronisasi otomatis saat Modal Preview Foto dibuka
+const modalPreviewFoto = document.getElementById('modalPreviewFoto');
+modalPreviewFoto?.addEventListener('show.bs.modal', function(e) {
+    if (!imgPreviewThumb || !imgPreviewThumb.src || imgPreviewThumb.src === '' || imgPreviewThumb.src === window.location.href) {
+        e.preventDefault();
+        return;
+    }
+    const modalImg = document.getElementById('modalPreviewImg');
+    const modalName = document.getElementById('modalPreviewFileName');
+    const modalSize = document.getElementById('modalPreviewFileSize');
+    if (modalImg) modalImg.src = imgPreviewThumb.src;
+    if (modalName && previewFileName) modalName.textContent = previewFileName.textContent;
+    if (modalSize && previewFileSize) modalSize.textContent = previewFileSize.textContent;
 });
 
 // Drag and drop efek visual

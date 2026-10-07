@@ -159,11 +159,18 @@ require_once __DIR__ . '/../includes/sidebar.php';
                             <i class="bi bi-arrow-up-right" style="font-size: 0.72rem;"></i>
                         </a>
                     </div>
-                    <div class="position-relative border rounded overflow-hidden bg-light shadow-sm text-center" style="max-height: 160px;">
-                        <a href="<?= e($fotoUrl) ?>" target="_blank">
-                            <img src="<?= e($fotoUrl) ?>" alt="Foto Bidang" class="img-fluid w-100 object-fit-cover" style="max-height: 160px;">
-                        </a>
+                    <div class="position-relative border rounded-3 overflow-hidden bg-light shadow-sm text-center" style="max-height: 180px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalFotoBidang" title="Klik untuk melihat foto">
+                        <img src="<?= e($fotoUrl) ?>" alt="Foto Bidang" class="img-fluid w-100 object-fit-cover" style="max-height: 180px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                        <div class="position-absolute bottom-0 start-0 end-0 py-1 px-2 text-white small text-center" style="background: rgba(0,0,0,0.55); font-size: 0.72rem; pointer-events: none;">
+                            <span><i class="bi bi-zoom-in me-1"></i>Klik untuk melihat</span>
+                        </div>
                     </div>
+                    <?php if (!empty($berkas['keterangan_foto'])): ?>
+                    <div class="mt-2 p-2 rounded bg-light border text-muted small" style="font-size: 0.76rem;">
+                        <span class="fw-semibold text-secondary d-block mb-1"><i class="bi bi-card-text text-primary me-1"></i>Keterangan Foto:</span>
+                        <div class="text-dark" style="white-space: pre-line;"><?= e($berkas['keterangan_foto']) ?></div>
+                    </div>
+                    <?php endif; ?>
                 </div>
                 <?php endif; ?>
                 <div class="mb-3"><div class="text-muted small">Status Saat Ini</div><div class="mt-1"><?= statusBadge($berkas['status_posisi']) ?></div></div>
@@ -348,5 +355,41 @@ document.addEventListener('DOMContentLoaded', function () {
     updateView();
 });
 </script>
+
+<?php if (!empty($berkas['foto_bidang'])): ?>
+<!-- Modal Foto Bidang -->
+<div class="modal fade" id="modalFotoBidang" tabindex="-1" aria-labelledby="modalFotoBidangLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-light py-2 px-3">
+                <h5 class="modal-title fs-6 fw-bold text-dark d-flex align-items-center" id="modalFotoBidangLabel">
+                    <i class="bi bi-image text-primary me-2"></i>Foto Bidang Tanah &mdash; No. Berkas <?= e($berkas['nomor_pendaftaran']) ?>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body text-center p-2 bg-dark">
+                <img src="<?= e(fotoBidangUrl($berkas['foto_bidang'])) ?>" alt="Foto Bidang" class="img-fluid rounded" style="max-height: 75vh; object-fit: contain;">
+            </div>
+            <div class="modal-footer py-2 px-3 d-flex flex-column align-items-stretch bg-light">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <span class="text-muted small">Pemohon: <strong><?= e($berkas['nama_pemohon']) ?></strong> (<?= e($berkas['sertifikat_desa'] ?: '-') ?>)</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="<?= e(fotoBidangUrl($berkas['foto_bidang'])) ?>" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-arrow-up-right me-1"></i>Buka Penuh
+                        </a>
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+                <?php if (!empty($berkas['keterangan_foto'])): ?>
+                <div class="mt-2 pt-2 border-top w-100 text-start">
+                    <div class="small fw-semibold text-secondary"><i class="bi bi-card-text text-primary me-1"></i>Keterangan Foto:</div>
+                    <div class="small text-dark mt-1" style="white-space: pre-line;"><?= e($berkas['keterangan_foto']) ?></div>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

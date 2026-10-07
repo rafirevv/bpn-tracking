@@ -734,7 +734,7 @@ function hapusFotoBidang(?string $filename): bool
 
 /**
  * Memvalidasi dan menyimpan upload foto bidang
- * Mendukung format JPG, JPEG, PNG, WEBP dengan ukuran maks. 5MB.
+ * Mendukung format JPG, JPEG, PNG, WEBP dengan ukuran maks. 10MB.
  *
  * @param array $file Array dari $_FILES['foto_bidang']
  * @return array ['success' => bool, 'filename' => ?string, 'error' => ?string]
@@ -763,10 +763,10 @@ function uploadFotoBidang(array $file): array
         return ['success' => false, 'filename' => null, 'error' => $msg];
     }
 
-    // Batas ukuran 5 MB (5 * 1024 * 1024 byte)
-    $maxBytes = 5 * 1024 * 1024;
+    // Batas ukuran 10 MB (10 * 1024 * 1024 byte)
+    $maxBytes = 10 * 1024 * 1024;
     if ($file['size'] > $maxBytes) {
-        return ['success' => false, 'filename' => null, 'error' => 'Ukuran foto maksimal adalah 5 MB.'];
+        return ['success' => false, 'filename' => null, 'error' => 'Ukuran foto maksimal adalah 10 MB.'];
     }
 
     // Validasi ekstensi

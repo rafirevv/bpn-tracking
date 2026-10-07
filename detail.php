@@ -203,9 +203,15 @@ if ($isKembaliPemohon) {
                     <div class="position-relative border rounded-3 overflow-hidden bg-light shadow-sm text-center" style="max-height: 200px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalFotoBidang" title="Klik untuk memperbesar">
                         <img src="<?= e($fotoUrl) ?>" alt="Foto Bidang <?= e($berkas['nomor_pendaftaran']) ?>" class="img-fluid w-100 object-fit-cover" style="max-height: 200px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                         <div class="position-absolute bottom-0 start-0 end-0 py-1 px-2 text-white small text-center" style="background: rgba(0,0,0,0.55); font-size: 0.72rem;">
-                            <span><i class="bi bi-zoom-in me-1"></i>Klik untuk melihat</span>
+                            <span><i class="bi bi-zoom-in me-1"></i>Klik untuk memperbesar</span>
                         </div>
                     </div>
+                    <?php if (!empty($berkas['keterangan_foto'])): ?>
+                    <div class="mt-2 p-2 rounded bg-light border text-muted small" style="font-size: 0.76rem;">
+                        <span class="fw-semibold text-secondary d-block mb-1"><i class="bi bi-card-text text-primary me-1"></i>Keterangan Foto:</span>
+                        <div class="text-dark" style="white-space: pre-line;"><?= e($berkas['keterangan_foto']) ?></div>
+                    </div>
+                    <?php endif; ?>
                 </div>
                 <?php endif; ?>
                 <?php if (!empty($berkas['nik'])): ?>
@@ -327,9 +333,17 @@ if ($isKembaliPemohon) {
             <div class="modal-body text-center p-2 bg-dark">
                 <img src="<?= e(fotoBidangUrl($berkas['foto_bidang'])) ?>" alt="Foto Bidang" class="img-fluid rounded" style="max-height: 75vh; object-fit: contain;">
             </div>
-            <div class="modal-footer py-2 px-3 d-flex justify-content-between align-items-center bg-light">
-                <span class="text-muted small">Pemohon: <strong><?= e($berkas['nama_pemohon']) ?></strong> (<?= e($berkas['sertifikat_desa']) ?>)</span>
-                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            <div class="modal-footer py-2 px-3 d-flex flex-column align-items-stretch bg-light">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <span class="text-muted small">Pemohon: <strong><?= e($berkas['nama_pemohon']) ?></strong> (<?= e($berkas['sertifikat_desa']) ?>)</span>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+                <?php if (!empty($berkas['keterangan_foto'])): ?>
+                <div class="mt-2 pt-2 border-top w-100 text-start">
+                    <div class="small fw-semibold text-secondary"><i class="bi bi-card-text text-primary me-1"></i>Keterangan Foto:</div>
+                    <div class="small text-dark mt-1" style="white-space: pre-line;"><?= e($berkas['keterangan_foto']) ?></div>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
